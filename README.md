@@ -1,39 +1,25 @@
-# 🐒🎸 MonGui — Estudio Web de Acordes y Rasgueos
+MonGui
 
-**MonGui** es una aplicación web interactiva diseñada para músicos, creadores de contenido y estudiantes de música que desean crear, organizar y descargar láminas visuales de acordes y patrones de rasgueo listos para compartir en redes sociales.
+Aplicación web para armar diagramas de acordes, escribir patrones de rasgueo y exportar láminas limpias en PNG listas para compartir o estudiar.
 
-Creado con identidad visual oscura tipo estudio musical, detalles neón y marca de agua integrada **`@ronits.ss`**.
+Desarrollado por @ronits.ss.
 
----
+Qué incluye
 
-## ✨ Características Principales
+Editor de diagramas: Soporte para guitarra (6 cuerdas), ukelele (4 cuerdas) y flauta dulce (8 orificios). Permite colocar dedos, cejillas arrastrando sobre el diapasón y marcar cuerdas al aire (O) o muteadas (✕).
 
-* **Soporte Multi-instrumento:**
-  * **Guitarra (6 cuerdas):** Posiciones de dedos, cejillas (`▬`), cuerdas al aire (`O`), cuerdas muteadas (`✕`) y traste inicial personalizable.
-  * **Ukelele (4 cuerdas):** Diagramas adaptados con el mismo control visual y colores neón.
-  * **Flauta Dulce (8 orificios):** Control de orificio posterior (pulgar) y 7 frontales con estados *abierto*, *tapado* y *medio tapado*.
-* **Optimizado para Celular y Computadora:**
-  * Interacción táctil fluida mediante *Pointer Events* (`touch-action: none`) sin desplazamiento accidental de pantalla al colocar puntos o deslizar cejillas.
-  * Modos rápidos para móvil: **`● Dedo`**, **`▬ Cejilla`** y **`O / ✕ Aire-Mute`**.
-* **Constructor de Rasgueos Completo:**
-  * Botones dedicados para **Bajo Principal (`B1`)**, **Bajo Secundario (`B2`)**, rasgueos hacia abajo (**`↓`**), hacia arriba (**`↑`**), apagado/chasquido (**`✕ Mute`**), acentos (**`↓>`**), pausas (**`—`**) y barras de compás (**`|`**).
-  * Ritmos predefinidos incluidos: *Corridos Tumbados (6/8)*, *Sierreño / Requinto (3/4)*, *6/8*, *3/4 Vals*, *4/4 Pop*, *Balada*, *Bolero* y *Reggae*.
-* **Bibliotecas Persistentes (`localStorage` + JSON):**
-  * **Mis Acordes:** Diccionario precargado con acordes esenciales (`F`, `Fm`, `F#`, `F#m`, `F#m7`, `F7`, `Fm7`, `F#7`, `C`, `G`, `Am`, `D`, `Em`, Ukelele y Flauta) y guardado automático de tus propias creaciones.
-  * **Mis Canciones:** Guarda tu repertorio completo y expórtalo o impórtalo en formato `.json`.
-* **Exportación PNG de Alta Calidad:**
-  * Descarga acordes individuales o láminas completas con título artístico (*Pacifico*), rasgueo, acordes centrados por fila y marca de agua **`@ronits.ss`**.
+Constructor de rasgueos: Secuencias paso a paso con bajo primario (B1), bajo secundario (B2), rasgueos (↓, ↑), acentos (↓>, ↑>), apagados (✕), pausas (—) y divisiones de compás (|), además de plantillas base para corridos tumbados (6/8), sierreño (3/4), ranchera, bolero, pop/rock y balada.
 
----
+Diccionario y repertorio local: Guarda automáticamente tus acordes y canciones en el navegador (localStorage) y permite respaldar o restaurar todo mediante archivos .json.
 
-## 🚀 Cómo usarlo
+Exportación en PNG: Genera imágenes individuales por acorde o láminas completas con los acordes centrados por fila y la firma @ronits.ss.
 
-1. Descarga o clona este repositorio.
-2. Abre el archivo `index.html` directamente en cualquier navegador moderno (Chrome, Safari, Edge, Brave) en PC o celular, o publícalo gratis en **GitHub Pages** / **Netlify**.
+Uso y personalización
 
----
+Abre index.html directamente en cualquier navegador moderno o súbelo a un hosting estático como GitHub Pages.
 
-## 📱 Créditos y Redes Sociales
+Para mostrar tu propio logotipo en el encabezado, coloca un archivo llamado logo.png en la misma carpeta que index.html o haz clic sobre el recuadro del logo dentro de la página para seleccionarlo desde tu dispositivo.
 
-* **Proyecto:** MonGui Chord Studio
-* **Instagram:** [@ronits.ss](https://instagram.com/ronits.ss)
+Licencia y créditos
+
+Proyecto creado para uso musical y educativo — Instagram: @ronits.ss
