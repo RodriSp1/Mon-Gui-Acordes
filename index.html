@@ -124,26 +124,17 @@
 <body class="antialiased selection:bg-yellow-400 selection:text-black">
 
     <!-- =======================================================================
-         ENCABEZADO PRINCIPAL (SIN SVG DECORATIVOS, CON ESPACIO PARA LOGO PROPIO)
+         ENCABEZADO PRINCIPAL (LOGO FIJO DIRECTO DESDE EL CÓDIGO)
          ======================================================================= -->
     <header class="sticky top-0 z-30 bg-[#0a0a0a]/95 border-b border-[#26262a]">
         <div class="max-w-7xl mx-auto px-3.5 sm:px-6 py-3 flex items-center justify-between gap-3">
 
-            <!-- Identidad y Contenedor de Logo Personalizable -->
+            <!-- Identidad y Logo Fijo -->
             <div class="flex items-center gap-3 min-w-0">
-                <label for="logo-upload-input" title="Haz clic para cargar tu propio logo (PNG/JPG)"
-                    class="relative w-10 h-10 sm:w-11 sm:h-11 bg-[#121214] border border-[#26262a] hover:border-yellow-400 rounded-[2px] flex items-center justify-center overflow-hidden cursor-pointer shrink-0 group">
-                    <!-- Carga logo.png desde la misma carpeta o usa la imagen subida por el usuario -->
-                    <img id="brand-logo-img" src="logo.png" alt="Logo MonGui"
-                        onerror="this.style.display='none'; document.getElementById('brand-logo-fallback').style.display='flex';"
-                        class="w-full h-full object-cover">
-                    <div id="brand-logo-fallback" style="display: none;"
-                        class="w-full h-full flex flex-col items-center justify-center text-zinc-400 group-hover:text-yellow-400">
-                        <i data-lucide="image-plus" class="w-4 h-4"></i>
-                        <span class="text-[8px] font-mono-tech uppercase mt-0.5">LOGO</span>
-                    </div>
-                    <input id="logo-upload-input" type="file" accept="image/*" class="hidden" onchange="handleCustomLogoUpload(event)">
-                </label>
+                <div class="w-10 h-10 sm:w-11 sm:h-11 bg-[#121214] border border-[#26262a] rounded-[2px] flex items-center justify-center overflow-hidden shrink-0">
+                    <!-- Coloca tu imagen con el nombre "logo.png" en la misma carpeta que este index.html -->
+                    <img id="brand-logo-img" src="logo.png" alt="Logo MonGui" class="w-full h-full object-cover">
+                </div>
 
                 <div class="min-w-0">
                     <div class="flex items-center gap-2">
@@ -151,11 +142,11 @@
                             MONGUI
                         </h1>
                         <span class="hidden sm:inline-block px-1.5 py-0.5 bg-[#18181b] border border-[#26262a] rounded-[2px] font-mono-tech text-[10px] text-zinc-400 uppercase">
-                            CHORD &amp; STRUM LAB
+                            ESTUDIO DE ACORDES Y RASGUEOS
                         </span>
                     </div>
                     <p class="text-[11px] text-zinc-400 truncate mt-0.5 font-mono-tech">
-                        @ronits.ss <span class="text-zinc-600">/</span> Clic en el recuadro para cambiar logo
+                        @ronits.ss
                     </p>
                 </div>
             </div>
@@ -375,7 +366,7 @@
                         </button>
                         <button type="button" onclick="applyStrumPreset('pop44')"
                             class="sharp-btn shrink-0 px-2.5 py-1 bg-[#18181b] hover:border-yellow-400 border border-[#26262a] text-[11px] font-semibold text-zinc-200">
-                            Pop / Rock 4/4
+                            Ritmo 4/4
                         </button>
                         <button type="button" onclick="applyStrumPreset('balada')"
                             class="sharp-btn shrink-0 px-2.5 py-1 bg-[#18181b] hover:border-yellow-400 border border-[#26262a] text-[11px] font-semibold text-zinc-200">
@@ -383,11 +374,11 @@
                         </button>
                         <button type="button" onclick="applyStrumPreset('reggae')"
                             class="sharp-btn shrink-0 px-2.5 py-1 bg-[#18181b] hover:border-yellow-400 border border-[#26262a] text-[11px] font-semibold text-zinc-200">
-                            Reggae / Mute
+                            Apagado 4/4
                         </button>
                     </div>
 
-                    <!-- Botonera de Golpes (B1, B2, Abajo, Arriba, Acentos, Mute, Pausa, Compás) -->
+                    <!-- Botonera de Golpes (B1, B2, Abajo, Arriba, Acentos, Apagado, Pausa, Compás) -->
                     <div class="grid grid-cols-3 sm:grid-cols-9 gap-1.5">
                         <button type="button" onclick="addStrumStep('bass1')"
                             class="sharp-btn py-2 px-1.5 bg-[#0a0a0a] hover:bg-yellow-400 hover:text-black text-white border border-[#26262a] font-mono-tech flex flex-col items-center">
@@ -422,7 +413,7 @@
                         <button type="button" onclick="addStrumStep('mute')"
                             class="sharp-btn py-2 px-1.5 bg-[#0a0a0a] hover:bg-white hover:text-black text-zinc-300 border border-[#26262a] font-mono-tech flex flex-col items-center">
                             <span class="text-xs font-bold">✕</span>
-                            <span class="text-[9px] text-zinc-400">Mute</span>
+                            <span class="text-[9px] text-zinc-400">Apagado</span>
                         </button>
                         <button type="button" onclick="addStrumStep('pause')"
                             class="sharp-btn py-2 px-1.5 bg-[#0a0a0a] hover:bg-zinc-800 text-zinc-400 border border-[#26262a] font-mono-tech flex flex-col items-center">
@@ -504,7 +495,7 @@
                             <i data-lucide="instagram" class="w-3.5 h-3.5 text-zinc-400"></i>
                             <span class="font-bold text-zinc-200">@ronits.ss</span>
                             <span class="text-zinc-700">|</span>
-                            <span>MONGUI STUDIO</span>
+                            <span>ESTUDIO MONGUI</span>
                         </div>
                     </div>
 
@@ -629,8 +620,7 @@
         const STORAGE_KEYS = {
             CHORDS: 'mongui_saved_chords_v3',
             SONGS: 'mongui_saved_songs_v3',
-            DRAFT: 'mongui_active_draft_v3',
-            LOGO: 'mongui_custom_logo_v3'
+            DRAFT: 'mongui_active_draft_v3'
         };
 
         /**
@@ -719,31 +709,6 @@
                 el.style.opacity = '0';
                 setTimeout(() => el.remove(), 200);
             }, 2200);
-        }
-
-        /**
-         * Permite al usuario cargar su propia imagen de logo desde el dispositivo
-         * y la guarda en localStorage para futuras sesiones.
-         */
-        function handleCustomLogoUpload(evt) {
-            const file = evt.target.files && evt.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const dataUrl = e.target.result;
-                applyCustomLogo(dataUrl);
-                try { localStorage.setItem(STORAGE_KEYS.LOGO, dataUrl); } catch (err) {}
-                showToast('Logo actualizado');
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function applyCustomLogo(src) {
-            const img = document.getElementById('brand-logo-img');
-            const fallback = document.getElementById('brand-logo-fallback');
-            img.src = src;
-            img.style.display = 'block';
-            fallback.style.display = 'none';
         }
 
         /* =====================================================================
@@ -1479,7 +1444,7 @@
             up:          { symbol: '↑',  label: 'ARRIBA',   badgeClass: 'bg-[#121214] border-[#26262a] text-white' },
             down_accent: { symbol: '↓>', label: 'ACENTO ↓', badgeClass: 'bg-[#18181b] border-yellow-400 text-yellow-400' },
             up_accent:   { symbol: '↑>', label: 'ACENTO ↑', badgeClass: 'bg-[#18181b] border-white text-white' },
-            mute:        { symbol: '✕',  label: 'MUTE',     badgeClass: 'bg-[#18181b] border-zinc-500 text-zinc-200' },
+            mute:        { symbol: '✕',  label: 'APAGADO',  badgeClass: 'bg-[#18181b] border-zinc-500 text-zinc-200' },
             pause:       { symbol: '—',  label: 'PAUSA',    badgeClass: 'bg-[#0a0a0a] border-[#26262a] text-zinc-500' },
             bar:         { symbol: '|',  label: 'COMPÁS',   badgeClass: 'bg-transparent border-transparent text-zinc-500 px-1' }
         };
@@ -1528,9 +1493,9 @@
                 sierreno: { label: 'Sierreño / Campirano (3/4)', steps: ['bass1', 'down', 'down', 'bar', 'bass2', 'down', 'down'] },
                 ranchera: { label: 'Ranchera / Vals (3/4)', steps: ['bass1', 'down_accent', 'down', 'bar', 'bass2', 'down_accent', 'down'] },
                 bolero:   { label: 'Bolero / Norteño (4/4)', steps: ['bass1', 'down', 'up', 'bar', 'bass2', 'down', 'up'] },
-                pop44:    { label: 'Pop / Rock (4/4)', steps: ['down', 'down', 'up', 'pause', 'up', 'down', 'up'] },
+                pop44:    { label: 'Ritmo Contemporáneo (4/4)', steps: ['down', 'down', 'up', 'pause', 'up', 'down', 'up'] },
                 balada:   { label: 'Balada (4/4)', steps: ['down', 'down', 'up', 'down', 'up'] },
-                reggae:   { label: 'Reggae / Mute (4/4)', steps: ['mute', 'down_accent', 'mute', 'down_accent'] }
+                reggae:   { label: 'Ritmo Apagado (4/4)', steps: ['mute', 'down_accent', 'mute', 'down_accent'] }
             };
             const selected = presets[presetName];
             if (!selected) return;
@@ -1764,7 +1729,7 @@
             ctx.font = '700 18px "JetBrains Mono", monospace';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.fillText('MONGUI STUDIO  |  @ronits.ss', canvasW / 2, footerY);
+            ctx.fillText('ESTUDIO MONGUI  |  @ronits.ss', canvasW / 2, footerY);
 
             const safeSong = titleText.replace(/[^a-zA-Z0-9_-]/g, '_');
             triggerDownloadCanvas(outCanvas, `MonGui_${safeSong}_ronits.ss.png`);
@@ -1840,7 +1805,7 @@
 
                 const labelMap = {
                     bass1: 'BAJO 1', bass2: 'BAJO 2', down: 'ABAJO', up: 'ARRIBA',
-                    down_accent: 'ACENTO', up_accent: 'ACENTO', mute: 'MUTE', pause: 'PAUSA'
+                    down_accent: 'ACENTO', up_accent: 'ACENTO', mute: 'APAGADO', pause: 'PAUSA'
                 };
                 sCtx.fillStyle = '#A1A1AA';
                 sCtx.font = '700 8.5px "JetBrains Mono", monospace';
@@ -2075,10 +2040,6 @@
             }
 
             try {
-                // Cargar logo personalizado si el usuario subió uno anteriormente
-                const savedLogo = localStorage.getItem(STORAGE_KEYS.LOGO);
-                if (savedLogo) applyCustomLogo(savedLogo);
-
                 const rawChords = localStorage.getItem(STORAGE_KEYS.CHORDS);
                 state.savedChords = rawChords ? JSON.parse(rawChords) : JSON.parse(JSON.stringify(DEFAULT_CHORDS));
                 if (!rawChords) persistChords();
