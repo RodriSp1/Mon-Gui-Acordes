@@ -1,25 +1,10 @@
-MonGui
+MONGUIESTUDIO WEB DE ACORDES, RASGUEOS Y LÁMINAS MUSICALESHerramienta web minimalista diseñada para músicos, creadores de contenido y estudiantes que necesitan armar diagramas de acordes, escribir patrones de rasgueo y exportar láminas limpias en PNG listas para compartir.Características principalesEditor multi-instrumento: Soporte nativo para Guitarra (6 cuerdas), Ukelele (4 cuerdas) y Flauta dulce (8 orificios con posiciones abiertas, cerradas y medio tapadas).Control táctil de precisión: Coloca dedos, dibuja cejillas deslizando sobre el diapasón y alterna cuerdas al aire (O) o apagadas (✕) tanto en computadora como en pantalla táctil móvil.Constructor de rasgueos: Secuencias paso a paso con bajo primario (B1), bajo secundario (B2), rasgueos (↓, ↑), acentos (↓>, ↑>), muteos (✕), pausas (—) y divisiones de compás (|).Memoria local y respaldo JSON: Guarda automáticamente tus acordes y canciones en el navegador (localStorage) con opción para exportar e importar copias de seguridad en .json.Exportación PNG en alta resolución: Descarga diagramas individuales o láminas completas con los acordes centrados por fila y la marca @ronits.ss.Patrones de rasgueo incluidosGénero / CompásSecuencia baseUso recomendadoCorridos Tumbados (6/8)B1 ↓ ↑ | B2 ↓ ↑Requinto, guitarra docerola y sierreño modernoSierreño / Campirano (3/4)B1 ↓ ↓ | B2 ↓ ↓Música campirana y regionalRanchera / Vals (3/4)B1 ↓> ↓ | B2 ↓> ↓Rancheras tradicionales y valsBolero / Norteño (4/4)B1 ↓ ↑ | B2 ↓ ↑Boleros y acompañamiento norteñoPop / Rock (4/4)↓ ↓ ↑ — ↑ ↓ ↑Ritmo estándar contemporáneoBalada (4/4)↓ ↓ ↑ ↓ ↑Canciones acústicas lentasReggae / Mute (4/4)✕ ↓> ✕ ↓>Acompañamiento percusivo apagadoInstalación y usoNo requiere dependencias, servidores ni compilación.# Clona el repositorio
+git clone https://github.com/tu-usuario/mongui.git
 
-Aplicación web para armar diagramas de acordes, escribir patrones de rasgueo y exportar láminas limpias en PNG listas para compartir o estudiar.
-
-Desarrollado por @ronits.ss.
-
-Qué incluye
-
-Editor de diagramas: Soporte para guitarra (6 cuerdas), ukelele (4 cuerdas) y flauta dulce (8 orificios). Permite colocar dedos, cejillas arrastrando sobre el diapasón y marcar cuerdas al aire (O) o muteadas (✕).
-
-Constructor de rasgueos: Secuencias paso a paso con bajo primario (B1), bajo secundario (B2), rasgueos (↓, ↑), acentos (↓>, ↑>), apagados (✕), pausas (—) y divisiones de compás (|), además de plantillas base para corridos tumbados (6/8), sierreño (3/4), ranchera, bolero, pop/rock y balada.
-
-Diccionario y repertorio local: Guarda automáticamente tus acordes y canciones en el navegador (localStorage) y permite respaldar o restaurar todo mediante archivos .json.
-
-Exportación en PNG: Genera imágenes individuales por acorde o láminas completas con los acordes centrados por fila y la firma @ronits.ss.
-
-Uso y personalización
-
-Abre index.html directamente en cualquier navegador moderno o súbelo a un hosting estático como GitHub Pages.
-
-Para mostrar tu propio logotipo en el encabezado, coloca un archivo llamado logo.png en la misma carpeta que index.html o haz clic sobre el recuadro del logo dentro de la página para seleccionarlo desde tu dispositivo.
-
-Licencia y créditos
-
-Proyecto creado para uso musical y educativo — Instagram: @ronits.ss
+# Entra a la carpeta y abre index.html en tu navegador
+cd mongui
+Personalizar el logotipoGuarda tu imagen con el nombre logo.png dentro de la misma carpeta que index.html.También puedes hacer clic directamente sobre el recuadro del logo en la barra superior de la aplicación para cargar cualquier imagen desde tu dispositivo.Estructura del proyectomongui/
+├── index.html    # Aplicación completa (interfaz, motor Canvas 2D y almacenamiento local)
+├── logo.png      # Logotipo personalizado opcional
+└── README.md     # Documentación del proyecto
+Creado por @ronits.ss
