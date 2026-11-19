@@ -1,0 +1,55 @@
+/* Carga local de Green Matcha si colocas GreenMatcha.ttf en la misma carpeta */
+@font-face {
+  font-family: 'Green Matcha';
+  src: local('Green Matcha'), url('GreenMatcha.ttf') format('truetype'), url('GreenMatcha.otf') format('opentype');
+  font-display: swap;
+}
+
+:root {
+  --bg: #09090b;
+  --panel: #121215;
+  --border: #27272a;
+  --accent: #facc15;
+}
+
+body {
+  background-color: var(--bg);
+  color: #f4f4f5;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.font-matcha {
+  font-family: 'Green Matcha', 'Titan One', 'Fredoka', cursive, sans-serif;
+  letter-spacing: 0.02em;
+}
+
+.font-mono-code {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Bloquea scroll accidental al tocar o arrastrar en móvil sobre el canvas */
+#editorCanvas {
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Scrollbars discretos */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #09090b;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #27272a;
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3f3f46;
+}

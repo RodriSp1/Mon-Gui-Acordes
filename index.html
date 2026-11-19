@@ -1,2079 +1,454 @@
 <!DOCTYPE html>
 <html lang="es" class="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <title>MONGUI — Estudio Minimalista de Acordes y Rasgueos | @ronits.ss</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>MonGui — Estudio de Acordes y Rasgueos | @ronits.ss</title>
 
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Tailwind CSS y Lucide Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
 
-    <!-- Iconos Monocromáticos Lucide -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Tipografías -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=JetBrains+Mono:wght@500;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Titan+One&display=swap" rel="stylesheet" />
 
-    <!-- Tipografías: Barlow Condensed (Títulos condensados en negrita) + Inter + JetBrains Mono -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-
-    <style>
-        /* =====================================================================
-           1. VARIABLES Y TOKENS DE DISEÑO (ESTÉTICA INDUSTRIAL MINIMALISTA)
-           ===================================================================== */
-        :root {
-            --bg-canvas: #0a0a0a;
-            --bg-surface: #121214;
-            --bg-elevated: #18181b;
-            --border-hairline: #26262a;
-            --border-strong: #3f3f46;
-            --text-primary: #fafafa;
-            --text-muted: #a1a1aa;
-            --accent-yellow: #facc15;
-        }
-
-        * {
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            background-color: var(--bg-canvas);
-            color: var(--text-primary);
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        /* =====================================================================
-           2. TIPOGRAFÍA CONDENSADA Y TÉCNICA
-           ===================================================================== */
-        .font-condensed {
-            font-family: 'Barlow Condensed', sans-serif;
-            letter-spacing: 0.02em;
-        }
-
-        .font-mono-tech {
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        /* =====================================================================
-           3. CONTENEDORES Y GEOMETRÍA AFILADA (MÁXIMO 2PX - 4PX DE RADIO)
-           ===================================================================== */
-        .panel-box {
-            background-color: var(--bg-surface);
-            border: 1px solid var(--border-hairline);
-            border-radius: 3px;
-        }
-
-        .subpanel-box {
-            background-color: var(--bg-canvas);
-            border: 1px solid var(--border-hairline);
-            border-radius: 2px;
-        }
-
-        .sharp-input {
-            background-color: #09090b;
-            border: 1px solid var(--border-hairline);
-            border-radius: 2px;
-            color: var(--text-primary);
-            transition: border-color 0.15s ease;
-        }
-
-        .sharp-input:focus {
-            outline: none;
-            border-color: var(--accent-yellow);
-        }
-
-        .sharp-btn {
-            border-radius: 2px;
-            transition: background-color 0.14s ease, border-color 0.14s ease, color 0.14s ease, transform 0.1s ease;
-        }
-
-        .sharp-btn:active:not(:disabled) {
-            transform: translateY(1px);
-        }
-
-        /* =====================================================================
-           4. MINIATURAS ESTÁTICAS SIN PARPADEO Y SCROLLBARS MONOCROMÁTICOS
-           ===================================================================== */
-        .chord-thumb-img {
-            display: block;
-            width: 100%;
-            height: auto;
-            background: #000000;
-            border-radius: 2px;
-            user-select: none;
-            -webkit-user-drag: none;
-        }
-
-        ::-webkit-scrollbar {
-            width: 5px;
-            height: 5px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #0a0a0a;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #27272a;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #52525b;
-        }
-    </style>
+  <!-- Hoja de estilos propia -->
+  <link rel="stylesheet" href="styles.css" />
 </head>
-<body class="antialiased selection:bg-yellow-400 selection:text-black">
+<body class="min-h-screen flex flex-col selection:bg-yellow-400 selection:text-black">
 
-    <!-- =======================================================================
-         ENCABEZADO PRINCIPAL (LOGO FIJO DIRECTO DESDE EL CÓDIGO)
-         ======================================================================= -->
-    <header class="sticky top-0 z-30 bg-[#0a0a0a]/95 border-b border-[#26262a]">
-        <div class="max-w-7xl mx-auto px-3.5 sm:px-6 py-3 flex items-center justify-between gap-3">
-
-            <!-- Identidad y Logo Fijo -->
-            <div class="flex items-center gap-3 min-w-0">
-                <div class="w-10 h-10 sm:w-11 sm:h-11 bg-[#121214] border border-[#26262a] rounded-[2px] flex items-center justify-center overflow-hidden shrink-0">
-                    <!-- Coloca tu imagen con el nombre "logo.png" en la misma carpeta que este index.html -->
-                    <img id="brand-logo-img" src="logo.png" alt="Logo MonGui" class="w-full h-full object-cover">
-                </div>
-
-                <div class="min-w-0">
-                    <div class="flex items-center gap-2">
-                        <h1 class="font-condensed text-2xl sm:text-3xl font-black uppercase tracking-wider text-white leading-none">
-                            MONGUI
-                        </h1>
-                        <span class="hidden sm:inline-block px-1.5 py-0.5 bg-[#18181b] border border-[#26262a] rounded-[2px] font-mono-tech text-[10px] text-zinc-400 uppercase">
-                            ESTUDIO DE ACORDES Y RASGUEOS
-                        </span>
-                    </div>
-                    <p class="text-[11px] text-zinc-400 truncate mt-0.5 font-mono-tech">
-                        @ronits.ss
-                    </p>
-                </div>
-            </div>
-
-            <!-- Botones de Acceso a Bibliotecas -->
-            <div class="flex items-center gap-2 shrink-0">
-                <button type="button" onclick="openChordsModal()"
-                    class="sharp-btn px-3 py-2 bg-[#121214] hover:bg-[#1c1c20] border border-[#26262a] hover:border-zinc-500 text-xs font-semibold text-zinc-200 flex items-center gap-1.5">
-                    <i data-lucide="grid" class="w-3.5 h-3.5 text-zinc-400"></i>
-                    <span>Mis Acordes</span>
-                    <span id="saved-chords-badge" class="px-1.5 py-0.2 bg-[#26262a] text-yellow-400 font-mono-tech text-[10px] font-bold">0</span>
-                </button>
-
-                <button type="button" onclick="openSongsModal()"
-                    class="sharp-btn px-3 py-2 bg-[#121214] hover:bg-[#1c1c20] border border-[#26262a] hover:border-zinc-500 text-xs font-semibold text-zinc-200 flex items-center gap-1.5">
-                    <i data-lucide="folder-open" class="w-3.5 h-3.5 text-zinc-400"></i>
-                    <span class="hidden sm:inline">Mis Canciones</span>
-                    <span class="sm:hidden">Canciones</span>
-                    <span id="saved-songs-badge" class="px-1.5 py-0.2 bg-[#26262a] text-white font-mono-tech text-[10px] font-bold">0</span>
-                </button>
-            </div>
+  <!-- ENCABEZADO PRINCIPAL -->
+  <header class="border-b border-zinc-800 bg-[#0d0d10] sticky top-0 z-30">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+      <!-- Identidad y Logo fijo -->
+      <div class="flex items-center gap-3.5">
+        <img
+          src="logo.png"
+          alt="MonGui"
+          onerror="this.style.display='none'"
+          class="w-12 h-12 object-cover border border-zinc-700 bg-zinc-900 rounded-[2px] shrink-0"
+        />
+        <div>
+          <div class="flex items-center gap-2.5">
+            <h1 class="font-matcha text-2xl sm:text-3xl text-white uppercase leading-none">MONGUI</h1>
+            <span class="text-[10px] font-mono-code uppercase tracking-wider px-2 py-0.5 border border-zinc-700 text-zinc-400 bg-zinc-900 rounded-[2px]">
+              ESTUDIO DE ACORDES Y RASGUEOS
+            </span>
+          </div>
+          <a
+            href="https://instagram.com/ronits.ss"
+            target="_blank"
+            rel="noopener"
+            class="inline-flex items-center gap-1.5 text-sm sm:text-base font-bold text-yellow-400 hover:text-yellow-300 mt-0.5"
+          >
+            <i data-lucide="instagram" class="w-4 h-4"></i>
+            <span>@ronits.ss</span>
+          </a>
         </div>
-    </header>
+      </div>
 
-    <!-- =======================================================================
-         ÁREA DE TRABAJO PRINCIPAL (2 COLUMNAS EN ESCRITORIO)
-         ======================================================================= -->
-    <main class="max-w-7xl mx-auto px-3.5 sm:px-6 py-5 space-y-5">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+      <!-- Acciones de Bibliotecas y Respaldo -->
+      <div class="flex flex-wrap items-center gap-2">
+        <button
+          onclick="openChordsModal()"
+          class="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold uppercase tracking-wider bg-zinc-900 hover:bg-zinc-800 text-zinc-100 border border-zinc-700 rounded-[2px] transition"
+        >
+          <i data-lucide="book-marked" class="w-3.5 h-3.5 text-yellow-400"></i>
+          <span>Mis Acordes</span>
+          <span id="savedChordsBadge" class="ml-1 px-1.5 py-0.2 bg-zinc-800 text-yellow-400 font-mono-code text-[11px]">0</span>
+        </button>
 
-            <!-- ===============================================================
-                 COLUMNA IZQUIERDA: EDITOR DE DIAGRAMA DE ACORDE (5 COLUMNAS)
-                 =============================================================== -->
-            <section class="lg:col-span-5 panel-box p-4 sm:p-5 space-y-4">
-                <!-- Cabecera de sección + Selector de Instrumento -->
-                <div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-[#26262a]">
-                    <div>
-                        <h2 class="font-condensed text-xl font-extrabold uppercase tracking-wide text-white leading-none">
-                            Editor de Acorde
-                        </h2>
-                        <p class="text-[11px] text-zinc-400 mt-1">Configura trastes, dedos, cejillas y cuerdas</p>
-                    </div>
+        <button
+          onclick="openSongsModal()"
+          class="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold uppercase tracking-wider bg-zinc-900 hover:bg-zinc-800 text-zinc-100 border border-zinc-700 rounded-[2px] transition"
+        >
+          <i data-lucide="folder-heart" class="w-3.5 h-3.5 text-yellow-400"></i>
+          <span>Mis Canciones</span>
+          <span id="savedSongsBadge" class="ml-1 px-1.5 py-0.2 bg-zinc-800 text-yellow-400 font-mono-code text-[11px]">0</span>
+        </button>
 
-                    <div class="inline-flex border border-[#26262a] bg-[#0a0a0a] p-0.5 rounded-[2px]">
-                        <button type="button" id="inst-guitar" onclick="setInstrument('guitar')"
-                            class="sharp-btn px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-yellow-400 text-black">
-                            Guitarra
-                        </button>
-                        <button type="button" id="inst-ukulele" onclick="setInstrument('ukulele')"
-                            class="sharp-btn px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-zinc-400 hover:text-white">
-                            Ukelele
-                        </button>
-                        <button type="button" id="inst-flute" onclick="setInstrument('flute')"
-                            class="sharp-btn px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-zinc-400 hover:text-white">
-                            Flauta
-                        </button>
-                    </div>
-                </div>
+        <button
+          onclick="exportBackupJSON()"
+          title="Descargar respaldo JSON"
+          class="p-2 text-zinc-400 hover:text-white bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 rounded-[2px]"
+        >
+          <i data-lucide="download" class="w-4 h-4"></i>
+        </button>
 
-                <!-- Inputs de Nombre, Traste Inicial y Acento Monocromático/Amarillo -->
-                <div class="grid grid-cols-12 gap-2.5">
-                    <div class="col-span-6">
-                        <label for="chord-name-input" class="block font-mono-tech text-[10px] uppercase tracking-wider text-zinc-400 mb-1">
-                            Acorde
-                        </label>
-                        <input id="chord-name-input" type="text" value="F" maxlength="14" placeholder="Ej. F#m7"
-                            oninput="onChordConfigChange()"
-                            class="sharp-input w-full px-3 py-2 font-condensed text-lg font-extrabold uppercase tracking-wide">
-                    </div>
-
-                    <div id="fret-control-box" class="col-span-3">
-                        <label for="start-fret-input" class="block font-mono-tech text-[10px] uppercase tracking-wider text-zinc-400 mb-1">
-                            Traste 1
-                        </label>
-                        <input id="start-fret-input" type="number" min="1" max="20" value="1"
-                            oninput="onChordConfigChange()"
-                            class="sharp-input w-full px-2 py-2 font-mono-tech text-sm font-bold text-center text-yellow-400">
-                    </div>
-
-                    <div class="col-span-3">
-                        <label class="block font-mono-tech text-[10px] uppercase tracking-wider text-zinc-400 mb-1">
-                            Marca
-                        </label>
-                        <div class="flex items-center justify-around h-[38px] px-1.5 bg-[#09090b] border border-[#26262a] rounded-[2px]">
-                            <button type="button" onclick="setAccentColor('#FACC15')" title="Amarillo Técnico"
-                                class="w-4 h-4 bg-yellow-400 border border-white/40"></button>
-                            <button type="button" onclick="setAccentColor('#FFFFFF')" title="Blanco Puro"
-                                class="w-4 h-4 bg-white border border-zinc-500"></button>
-                            <button type="button" onclick="setAccentColor('#A1A1AA')" title="Gris Plata"
-                                class="w-4 h-4 bg-zinc-400 border border-zinc-600"></button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Herramientas Táctiles del Diapasón -->
-                <div id="string-tools-bar" class="subpanel-box p-2 flex flex-wrap items-center justify-between gap-2">
-                    <div class="flex items-center gap-1.5">
-                        <button type="button" id="tool-dot" onclick="setToolMode('dot')"
-                            class="sharp-btn px-2.5 py-1.5 bg-yellow-400 text-black text-xs font-bold flex items-center gap-1.5">
-                            <i data-lucide="circle-dot" class="w-3.5 h-3.5"></i>
-                            <span>Dedo</span>
-                        </button>
-                        <button type="button" id="tool-barre" onclick="setToolMode('barre')"
-                            class="sharp-btn px-2.5 py-1.5 bg-[#121214] text-zinc-300 border border-[#26262a] hover:border-zinc-500 text-xs font-semibold flex items-center gap-1.5">
-                            <i data-lucide="minus" class="w-3.5 h-3.5"></i>
-                            <span>Cejilla</span>
-                        </button>
-                        <button type="button" id="tool-top" onclick="setToolMode('top')"
-                            class="sharp-btn px-2.5 py-1.5 bg-[#121214] text-zinc-300 border border-[#26262a] hover:border-zinc-500 text-xs font-semibold flex items-center gap-1.5">
-                            <i data-lucide="x-circle" class="w-3.5 h-3.5"></i>
-                            <span>O / ✕</span>
-                        </button>
-                    </div>
-
-                    <button type="button" onclick="clearCurrentDiagram()"
-                        class="sharp-btn px-2 py-1 text-[11px] font-mono-tech text-zinc-400 hover:text-white flex items-center gap-1">
-                        <i data-lucide="rotate-ccw" class="w-3 h-3"></i>
-                        <span>Limpiar</span>
-                    </button>
-                </div>
-
-                <!-- Lienzo Interactivo Canvas -->
-                <div class="flex flex-col items-center">
-                    <div class="p-2 bg-black border border-[#26262a] rounded-[2px] w-full max-w-[320px] flex items-center justify-center">
-                        <canvas id="editor-canvas" width="340" height="440"
-                            style="touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;"
-                            class="cursor-pointer block w-full max-w-[304px] h-auto aspect-[340/440]"></canvas>
-                    </div>
-                    <p id="editor-hint-text" class="text-[11px] text-zinc-500 mt-2 text-center font-mono-tech">
-                        Toca una cuerda o desliza horizontalmente para cejilla
-                    </p>
-                </div>
-
-                <!-- Acciones del Acorde -->
-                <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                    <button type="button" onclick="addCurrentChordToSheet()"
-                        class="col-span-2 sm:col-span-1 sharp-btn py-2.5 px-3 bg-yellow-400 hover:bg-yellow-300 text-black font-bold text-xs uppercase tracking-wide flex items-center justify-center gap-1.5">
-                        <i data-lucide="plus" class="w-4 h-4"></i>
-                        <span id="add-chord-btn-label">A la Hoja</span>
-                    </button>
-
-                    <button type="button" onclick="saveCurrentChordToLibrary(true)"
-                        class="sharp-btn py-2.5 px-3 bg-[#18181b] hover:bg-[#222226] border border-[#26262a] text-zinc-200 font-semibold text-xs flex items-center justify-center gap-1.5">
-                        <i data-lucide="bookmark" class="w-3.5 h-3.5 text-zinc-400"></i>
-                        <span>Guardar</span>
-                    </button>
-
-                    <button type="button" onclick="downloadSingleChordPNG()"
-                        class="sharp-btn py-2.5 px-3 bg-[#18181b] hover:bg-[#222226] border border-[#26262a] text-zinc-200 font-semibold text-xs flex items-center justify-center gap-1.5">
-                        <i data-lucide="download" class="w-3.5 h-3.5 text-zinc-400"></i>
-                        <span>PNG Solo</span>
-                    </button>
-                </div>
-
-                <!-- Barra de Acceso Rápido a Acordes Guardados -->
-                <div class="pt-3 border-t border-[#26262a] space-y-2">
-                    <div class="flex items-center justify-between">
-                        <span class="font-mono-tech text-[10px] uppercase tracking-wider text-zinc-400">
-                            Acordes recientes
-                        </span>
-                        <button type="button" onclick="openChordsModal()" class="text-[11px] font-mono-tech text-yellow-400 hover:underline">
-                            Ver diccionario completo →
-                        </button>
-                    </div>
-                    <div id="quick-chords-strip" class="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-4 gap-2">
-                        <!-- Miniaturas estáticas cacheadas -->
-                    </div>
-                </div>
-            </section>
-
-            <!-- ===============================================================
-                 COLUMNA DERECHA: CONSTRUCTOR DE RASGUEO + HOJA DE CANCIÓN (7 COLS)
-                 =============================================================== -->
-            <div class="lg:col-span-7 space-y-5">
-
-                <!-- TARJETA 1: PATRÓN DE RASGUEO (CORREGIDO Y PRECISO) -->
-                <section class="panel-box p-4 sm:p-5 space-y-3.5">
-                    <div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-[#26262a]">
-                        <div>
-                            <h2 class="font-condensed text-xl font-extrabold uppercase tracking-wide text-white leading-none">
-                                Patrón de Rasgueo
-                            </h2>
-                            <p class="text-[11px] text-zinc-400 mt-1">Bajos (B1/B2), rasgueos (↓/↑), acentos y apagados (✕)</p>
-                        </div>
-
-                        <div class="flex items-center gap-2">
-                            <input id="strum-meter-input" type="text" value="Corridos Tumbados (6/8)" maxlength="32"
-                                placeholder="Compás o ritmo"
-                                oninput="onStrumMeterChange()"
-                                class="sharp-input px-2.5 py-1.5 font-mono-tech text-xs text-zinc-200 w-44 sm:w-52">
-                            <button type="button" onclick="clearStrumPattern()"
-                                class="sharp-btn px-2 py-1.5 text-[11px] font-mono-tech text-zinc-400 hover:text-white flex items-center gap-1">
-                                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                                <span>Limpiar</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Ritmos Predefinidos Musicalmente Correctos -->
-                    <div class="flex items-center gap-1.5 overflow-x-auto pb-1">
-                        <span class="font-mono-tech text-[10px] uppercase text-zinc-500 shrink-0 mr-1">Base:</span>
-                        <button type="button" onclick="applyStrumPreset('tumbado')"
-                            class="sharp-btn shrink-0 px-2.5 py-1 bg-[#18181b] hover:border-yellow-400 border border-[#26262a] text-[11px] font-semibold text-zinc-200">
-                            Tumbado 6/8
-                        </button>
-                        <button type="button" onclick="applyStrumPreset('sierreno')"
-                            class="sharp-btn shrink-0 px-2.5 py-1 bg-[#18181b] hover:border-yellow-400 border border-[#26262a] text-[11px] font-semibold text-zinc-200">
-                            Sierreño 3/4
-                        </button>
-                        <button type="button" onclick="applyStrumPreset('ranchera')"
-                            class="sharp-btn shrink-0 px-2.5 py-1 bg-[#18181b] hover:border-yellow-400 border border-[#26262a] text-[11px] font-semibold text-zinc-200">
-                            Ranchera 3/4
-                        </button>
-                        <button type="button" onclick="applyStrumPreset('bolero')"
-                            class="sharp-btn shrink-0 px-2.5 py-1 bg-[#18181b] hover:border-yellow-400 border border-[#26262a] text-[11px] font-semibold text-zinc-200">
-                            Bolero / Norteño
-                        </button>
-                        <button type="button" onclick="applyStrumPreset('pop44')"
-                            class="sharp-btn shrink-0 px-2.5 py-1 bg-[#18181b] hover:border-yellow-400 border border-[#26262a] text-[11px] font-semibold text-zinc-200">
-                            Ritmo 4/4
-                        </button>
-                        <button type="button" onclick="applyStrumPreset('balada')"
-                            class="sharp-btn shrink-0 px-2.5 py-1 bg-[#18181b] hover:border-yellow-400 border border-[#26262a] text-[11px] font-semibold text-zinc-200">
-                            Balada 4/4
-                        </button>
-                        <button type="button" onclick="applyStrumPreset('reggae')"
-                            class="sharp-btn shrink-0 px-2.5 py-1 bg-[#18181b] hover:border-yellow-400 border border-[#26262a] text-[11px] font-semibold text-zinc-200">
-                            Apagado 4/4
-                        </button>
-                    </div>
-
-                    <!-- Botonera de Golpes (B1, B2, Abajo, Arriba, Acentos, Apagado, Pausa, Compás) -->
-                    <div class="grid grid-cols-3 sm:grid-cols-9 gap-1.5">
-                        <button type="button" onclick="addStrumStep('bass1')"
-                            class="sharp-btn py-2 px-1.5 bg-[#0a0a0a] hover:bg-yellow-400 hover:text-black text-white border border-[#26262a] font-mono-tech flex flex-col items-center">
-                            <span class="text-xs font-bold">B1</span>
-                            <span class="text-[9px] text-zinc-400">Bajo 1</span>
-                        </button>
-                        <button type="button" onclick="addStrumStep('bass2')"
-                            class="sharp-btn py-2 px-1.5 bg-[#0a0a0a] hover:bg-yellow-400 hover:text-black text-white border border-[#26262a] font-mono-tech flex flex-col items-center">
-                            <span class="text-xs font-bold">B2</span>
-                            <span class="text-[9px] text-zinc-400">Bajo 2</span>
-                        </button>
-                        <button type="button" onclick="addStrumStep('down')"
-                            class="sharp-btn py-2 px-1.5 bg-[#0a0a0a] hover:bg-yellow-400 hover:text-black text-yellow-400 border border-[#26262a] font-mono-tech flex flex-col items-center">
-                            <span class="text-xs font-bold">↓</span>
-                            <span class="text-[9px] text-zinc-400">Abajo</span>
-                        </button>
-                        <button type="button" onclick="addStrumStep('up')"
-                            class="sharp-btn py-2 px-1.5 bg-[#0a0a0a] hover:bg-yellow-400 hover:text-black text-white border border-[#26262a] font-mono-tech flex flex-col items-center">
-                            <span class="text-xs font-bold">↑</span>
-                            <span class="text-[9px] text-zinc-400">Arriba</span>
-                        </button>
-                        <button type="button" onclick="addStrumStep('down_accent')"
-                            class="sharp-btn py-2 px-1.5 bg-[#0a0a0a] hover:bg-yellow-400 hover:text-black text-yellow-400 border border-[#26262a] font-mono-tech flex flex-col items-center">
-                            <span class="text-xs font-bold">↓&gt;</span>
-                            <span class="text-[9px] text-zinc-400">Acento ↓</span>
-                        </button>
-                        <button type="button" onclick="addStrumStep('up_accent')"
-                            class="sharp-btn py-2 px-1.5 bg-[#0a0a0a] hover:bg-yellow-400 hover:text-black text-white border border-[#26262a] font-mono-tech flex flex-col items-center">
-                            <span class="text-xs font-bold">↑&gt;</span>
-                            <span class="text-[9px] text-zinc-400">Acento ↑</span>
-                        </button>
-                        <button type="button" onclick="addStrumStep('mute')"
-                            class="sharp-btn py-2 px-1.5 bg-[#0a0a0a] hover:bg-white hover:text-black text-zinc-300 border border-[#26262a] font-mono-tech flex flex-col items-center">
-                            <span class="text-xs font-bold">✕</span>
-                            <span class="text-[9px] text-zinc-400">Apagado</span>
-                        </button>
-                        <button type="button" onclick="addStrumStep('pause')"
-                            class="sharp-btn py-2 px-1.5 bg-[#0a0a0a] hover:bg-zinc-800 text-zinc-400 border border-[#26262a] font-mono-tech flex flex-col items-center">
-                            <span class="text-xs font-bold">—</span>
-                            <span class="text-[9px] text-zinc-500">Pausa</span>
-                        </button>
-                        <button type="button" onclick="addStrumStep('bar')"
-                            class="sharp-btn py-2 px-1.5 bg-[#0a0a0a] hover:bg-zinc-800 text-zinc-400 border border-[#26262a] font-mono-tech flex flex-col items-center">
-                            <span class="text-xs font-bold">|</span>
-                            <span class="text-[9px] text-zinc-500">Compás</span>
-                        </button>
-                    </div>
-
-                    <!-- Secuencia Activa del Rasgueo -->
-                    <div class="subpanel-box p-2.5 min-h-[62px] flex items-center justify-between gap-2">
-                        <div id="strum-sequence-container" class="flex flex-wrap items-center gap-1.5 flex-1">
-                            <!-- Pasos dinámicos -->
-                        </div>
-                        <button type="button" onclick="popStrumStep()" title="Borrar último golpe"
-                            class="sharp-btn shrink-0 px-2.5 py-2 bg-[#121214] hover:bg-[#1c1c20] border border-[#26262a] text-zinc-300">
-                            <i data-lucide="delete" class="w-4 h-4"></i>
-                        </button>
-                    </div>
-                </section>
-
-                <!-- TARJETA 2: LÁMINA DE CANCIÓN Y EXPORTACIÓN PNG -->
-                <section class="panel-box p-4 sm:p-5 space-y-4">
-                    <div class="flex flex-wrap items-end justify-between gap-3">
-                        <div class="flex-1 min-w-[200px]">
-                            <label for="song-title-input" class="block font-mono-tech text-[10px] uppercase tracking-wider text-zinc-400 mb-1">
-                                Título de la Canción / Lámina
-                            </label>
-                            <input id="song-title-input" type="text" value="MI CANCIÓN EN MONGUI" maxlength="44"
-                                placeholder="NOMBRE DE LA CANCIÓN..."
-                                oninput="onSongTitleChange()"
-                                class="sharp-input w-full px-3 py-2 font-condensed text-xl sm:text-2xl font-black uppercase tracking-wide text-white">
-                        </div>
-
-                        <div class="flex items-center gap-2">
-                            <div>
-                                <label for="columns-select" class="block font-mono-tech text-[10px] uppercase tracking-wider text-zinc-400 mb-1">
-                                    Columnas
-                                </label>
-                                <select id="columns-select" onchange="renderSheetGrid()"
-                                    class="sharp-input px-2.5 py-2 font-mono-tech text-xs font-bold text-zinc-200">
-                                    <option value="2">2 COLS</option>
-                                    <option value="3" selected>3 COLS</option>
-                                    <option value="4">4 COLS</option>
-                                </select>
-                            </div>
-
-                            <div class="pt-4">
-                                <button type="button" onclick="newBlankSong()"
-                                    class="sharp-btn px-3 py-2 bg-[#18181b] hover:bg-[#222226] border border-[#26262a] text-xs font-semibold text-zinc-300 flex items-center gap-1.5">
-                                    <i data-lucide="file-plus" class="w-3.5 h-3.5 text-zinc-400"></i>
-                                    <span>Nueva</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Vista Previa Negra Centrada -->
-                    <div class="bg-black border border-[#26262a] rounded-[2px] p-4 sm:p-5 space-y-4">
-                        <div class="text-center space-y-1">
-                            <h3 id="preview-song-title" class="font-condensed text-2xl sm:text-3xl font-black uppercase tracking-wider text-white">
-                                MI CANCIÓN EN MONGUI
-                            </h3>
-                            <div class="w-16 h-[2px] mx-auto bg-yellow-400"></div>
-                            <p id="preview-strum-badge" class="font-mono-tech text-[11px] text-zinc-400 pt-1"></p>
-                        </div>
-
-                        <!-- Filas Centradas Dinámicamente -->
-                        <div id="sheet-chords-container" class="space-y-3">
-                            <!-- Acordes de la hoja -->
-                        </div>
-
-                        <!-- Pie con Marca de Agua @ronits.ss -->
-                        <div class="pt-2.5 border-t border-zinc-900 flex items-center justify-center gap-2 font-mono-tech text-[11px] text-zinc-400">
-                            <i data-lucide="instagram" class="w-3.5 h-3.5 text-zinc-400"></i>
-                            <span class="font-bold text-zinc-200">@ronits.ss</span>
-                            <span class="text-zinc-700">|</span>
-                            <span>ESTUDIO MONGUI</span>
-                        </div>
-                    </div>
-
-                    <!-- Botones de Guardar Canción y Descargar PNG -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                        <button type="button" onclick="saveCurrentSongToLibrary()"
-                            class="sharp-btn py-3 px-4 bg-[#18181b] hover:bg-[#222226] border border-[#3f3f46] text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2">
-                            <i data-lucide="save" class="w-4 h-4 text-zinc-300"></i>
-                            <span id="save-song-btn-label">Guardar Canción</span>
-                        </button>
-
-                        <button type="button" onclick="downloadFullSheetPNG()"
-                            class="sharp-btn py-3 px-4 bg-yellow-400 hover:bg-yellow-300 text-black font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-2">
-                            <i data-lucide="image-down" class="w-4 h-4"></i>
-                            <span>Descargar Lámina PNG</span>
-                        </button>
-                    </div>
-                </section>
-            </div>
-        </div>
-    </main>
-
-    <!-- =======================================================================
-         MODAL: DICCIONARIO DE ACORDES GUARDADOS
-         ======================================================================= -->
-    <div id="chords-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/85 p-3 sm:p-5">
-        <div class="panel-box w-full max-w-4xl max-h-[88vh] flex flex-col overflow-hidden">
-            <div class="p-4 border-b border-[#26262a] flex items-center justify-between gap-3">
-                <div>
-                    <h3 class="font-condensed text-xl font-extrabold uppercase tracking-wide text-white">
-                        Diccionario de Acordes Guardados
-                    </h3>
-                    <p class="text-xs text-zinc-400">Selecciona un acorde para insertarlo en tu canción o editarlo</p>
-                </div>
-                <button type="button" onclick="closeChordsModal()"
-                    class="sharp-btn w-8 h-8 bg-[#18181b] hover:bg-[#26262a] border border-[#26262a] text-zinc-300 flex items-center justify-center">
-                    <i data-lucide="x" class="w-4 h-4"></i>
-                </button>
-            </div>
-
-            <div class="p-3.5 bg-[#0a0a0a] border-b border-[#26262a] flex flex-wrap items-center justify-between gap-2.5">
-                <div class="flex flex-wrap items-center gap-1.5">
-                    <button type="button" data-chord-filter="all" onclick="setChordLibraryFilter('all')"
-                        class="chord-filter-btn sharp-btn px-3 py-1.5 bg-yellow-400 text-black text-xs font-bold uppercase">
-                        Todos
-                    </button>
-                    <button type="button" data-chord-filter="guitar" onclick="setChordLibraryFilter('guitar')"
-                        class="chord-filter-btn sharp-btn px-3 py-1.5 bg-[#121214] text-zinc-300 border border-[#26262a] text-xs font-semibold uppercase">
-                        Guitarra
-                    </button>
-                    <button type="button" data-chord-filter="ukulele" onclick="setChordLibraryFilter('ukulele')"
-                        class="chord-filter-btn sharp-btn px-3 py-1.5 bg-[#121214] text-zinc-300 border border-[#26262a] text-xs font-semibold uppercase">
-                        Ukelele
-                    </button>
-                    <button type="button" data-chord-filter="flute" onclick="setChordLibraryFilter('flute')"
-                        class="chord-filter-btn sharp-btn px-3 py-1.5 bg-[#121214] text-zinc-300 border border-[#26262a] text-xs font-semibold uppercase">
-                        Flauta
-                    </button>
-                </div>
-
-                <input id="chord-search-input" type="text" placeholder="Buscar acorde..."
-                    oninput="renderChordsLibraryGrid()"
-                    class="sharp-input px-3 py-1.5 text-xs w-full sm:w-56">
-            </div>
-
-            <div id="chords-library-grid" class="p-4 overflow-y-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 flex-1">
-                <!-- Miniaturas PNG estáticas -->
-            </div>
-        </div>
+        <label
+          title="Importar respaldo JSON"
+          class="p-2 text-zinc-400 hover:text-white bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 rounded-[2px] cursor-pointer"
+        >
+          <i data-lucide="upload" class="w-4 h-4"></i>
+          <input type="file" accept=".json" onchange="importBackupJSON(event)" class="hidden" />
+        </label>
+      </div>
     </div>
+  </header>
 
-    <!-- =======================================================================
-         MODAL: BIBLIOTECA DE CANCIONES GUARDADAS
-         ======================================================================= -->
-    <div id="songs-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/85 p-3 sm:p-5">
-        <div class="panel-box w-full max-w-3xl max-h-[88vh] flex flex-col overflow-hidden">
-            <div class="p-4 border-b border-[#26262a] flex items-center justify-between gap-3">
-                <div>
-                    <h3 class="font-condensed text-xl font-extrabold uppercase tracking-wide text-white">
-                        Mis Canciones Guardadas
-                    </h3>
-                    <p class="text-xs text-zinc-400">Administra tu repertorio o exporta un respaldo en JSON</p>
-                </div>
-                <button type="button" onclick="closeSongsModal()"
-                    class="sharp-btn w-8 h-8 bg-[#18181b] hover:bg-[#26262a] border border-[#26262a] text-zinc-300 flex items-center justify-center">
-                    <i data-lucide="x" class="w-4 h-4"></i>
-                </button>
-            </div>
+  <!-- CONTENIDO PRINCIPAL ORDENADO EN 2 COLUMNAS -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 py-5 grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
 
-            <div class="p-3.5 bg-[#0a0a0a] border-b border-[#26262a] flex flex-wrap items-center justify-between gap-2">
-                <input id="song-search-input" type="text" placeholder="Filtrar canciones..."
-                    oninput="renderSongsLibraryList()"
-                    class="sharp-input px-3 py-1.5 text-xs flex-1 min-w-[180px]">
+    <!-- COLUMNA IZQUIERDA (5 cols): 1. EDITOR DE DIAGRAMA -->
+    <section class="lg:col-span-5 bg-[#121215] border border-zinc-800 rounded-[3px] p-4 space-y-4">
+      <div class="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+        <h2 class="font-matcha text-lg text-white uppercase flex items-center gap-2">
+          <span class="text-yellow-400">1.</span> Editor de Diagrama
+        </h2>
+        <button
+          onclick="clearEditor()"
+          class="inline-flex items-center gap-1 text-xs font-semibold text-zinc-400 hover:text-red-400 px-2 py-1 border border-zinc-800 hover:border-zinc-700 rounded-[2px]"
+        >
+          <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+          <span>Limpiar</span>
+        </button>
+      </div>
 
-                <div class="flex items-center gap-2">
-                    <button type="button" onclick="exportFullBackupJSON()"
-                        class="sharp-btn px-3 py-1.5 bg-[#121214] hover:bg-[#1c1c20] border border-[#26262a] text-xs font-semibold text-zinc-200 flex items-center gap-1.5">
-                        <i data-lucide="upload" class="w-3.5 h-3.5 text-zinc-400"></i>
-                        <span>Exportar JSON</span>
-                    </button>
-                    <label class="sharp-btn cursor-pointer px-3 py-1.5 bg-[#121214] hover:bg-[#1c1c20] border border-[#26262a] text-xs font-semibold text-zinc-200 flex items-center gap-1.5">
-                        <i data-lucide="download" class="w-3.5 h-3.5 text-zinc-400"></i>
-                        <span>Importar JSON</span>
-                        <input type="file" accept=".json" class="hidden" onchange="importBackupJSON(event)">
-                    </label>
-                </div>
-            </div>
+      <!-- Selector de Instrumento -->
+      <div class="grid grid-cols-3 gap-1.5 bg-zinc-950 p-1 border border-zinc-800 rounded-[2px]">
+        <button id="inst-guitar" onclick="setInstrument('guitar')" class="inst-btn py-1.5 text-xs font-bold uppercase tracking-wider rounded-[2px] transition">
+          Guitarra
+        </button>
+        <button id="inst-ukulele" onclick="setInstrument('ukulele')" class="inst-btn py-1.5 text-xs font-bold uppercase tracking-wider rounded-[2px] transition">
+          Ukelele
+        </button>
+        <button id="inst-flute" onclick="setInstrument('flute')" class="inst-btn py-1.5 text-xs font-bold uppercase tracking-wider rounded-[2px] transition">
+          Flauta
+        </button>
+      </div>
 
-            <div id="songs-library-list" class="p-4 overflow-y-auto space-y-2.5 flex-1">
-                <!-- Lista de canciones -->
-            </div>
+      <!-- Nombre del Acorde y Traste Inicial -->
+      <div class="grid grid-cols-12 gap-2.5">
+        <div class="col-span-7">
+          <label class="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1">Nombre del Acorde / Nota</label>
+          <input
+            id="chordNameInput"
+            type="text"
+            value="F#m7"
+            maxlength="14"
+            placeholder="Ej. F, Am, G7, Do..."
+            oninput="renderEditorCanvas()"
+            class="w-full bg-zinc-950 border border-zinc-700 focus:border-yellow-400 outline-none px-3 py-2 text-base font-bold text-white rounded-[2px]"
+          />
         </div>
+        <div id="fretControlGroup" class="col-span-5">
+          <label class="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1">Traste Inicial</label>
+          <div class="flex items-center bg-zinc-950 border border-zinc-700 rounded-[2px]">
+            <button onclick="changeStartFret(-1)" class="px-2.5 py-2 text-zinc-300 hover:text-yellow-400 font-bold">-</button>
+            <input
+              id="startFretInput"
+              type="number"
+              min="1"
+              max="20"
+              value="1"
+              onchange="setStartFret(this.value)"
+              class="w-full bg-transparent text-center font-mono-code font-bold text-white outline-none text-sm"
+            />
+            <button onclick="changeStartFret(1)" class="px-2.5 py-2 text-zinc-300 hover:text-yellow-400 font-bold">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Herramientas Táctiles (Solo cuerdas) -->
+      <div id="stringToolsBar" class="grid grid-cols-3 gap-1.5">
+        <button id="tool-dot" onclick="setTool('dot')" class="tool-btn py-2 px-2 text-xs font-bold uppercase tracking-wider border rounded-[2px] flex items-center justify-center gap-1.5">
+          <i data-lucide="circle-dot" class="w-3.5 h-3.5"></i>
+          <span>Dedo</span>
+        </button>
+        <button id="tool-barre" onclick="setTool('barre')" class="tool-btn py-2 px-2 text-xs font-bold uppercase tracking-wider border rounded-[2px] flex items-center justify-center gap-1.5">
+          <i data-lucide="minus" class="w-3.5 h-3.5"></i>
+          <span>Cejilla</span>
+        </button>
+        <button id="tool-openmute" onclick="setTool('openmute')" class="tool-btn py-2 px-2 text-xs font-bold uppercase tracking-wider border rounded-[2px] flex items-center justify-center gap-1.5">
+          <i data-lucide="disc" class="w-3.5 h-3.5"></i>
+          <span>O / ✕</span>
+        </button>
+      </div>
+
+      <!-- Lienzo Interactivo -->
+      <div class="bg-black border border-zinc-800 rounded-[2px] p-3 flex flex-col items-center justify-center relative">
+        <canvas id="editorCanvas" width="270" height="330" class="max-w-full h-auto cursor-pointer"></canvas>
+        <p id="editorHint" class="text-[11px] text-zinc-500 mt-2 text-center">
+          Toca un traste para colocar puntos o arrastra para trazar una cejilla.
+        </p>
+      </div>
+
+      <!-- Selector de Color -->
+      <div class="flex items-center justify-between bg-zinc-950 border border-zinc-800 px-3 py-2 rounded-[2px]">
+        <span class="text-xs font-bold uppercase tracking-wider text-zinc-400">Color de marca</span>
+        <div class="flex items-center gap-2" id="colorSwatches">
+          <button onclick="setDotColor('#facc15')" data-color="#facc15" class="w-6 h-6 bg-[#facc15] border-2 border-white rounded-[2px]"></button>
+          <button onclick="setDotColor('#ffffff')" data-color="#ffffff" class="w-6 h-6 bg-white border border-zinc-600 rounded-[2px]"></button>
+          <button onclick="setDotColor('#38bdf8')" data-color="#38bdf8" class="w-6 h-6 bg-[#38bdf8] border border-zinc-600 rounded-[2px]"></button>
+          <button onclick="setDotColor('#4ade80')" data-color="#4ade80" class="w-6 h-6 bg-[#4ade80] border border-zinc-600 rounded-[2px]"></button>
+          <button onclick="setDotColor('#fb7185')" data-color="#fb7185" class="w-6 h-6 bg-[#fb7185] border border-zinc-600 rounded-[2px]"></button>
+        </div>
+      </div>
+
+      <!-- Botones Principales del Acorde -->
+      <div class="grid grid-cols-2 gap-2">
+        <button
+          onclick="saveCurrentChordToLibrary(true)"
+          class="py-2.5 px-3 bg-zinc-900 hover:bg-zinc-800 text-zinc-100 border border-zinc-700 text-xs font-bold uppercase tracking-wider rounded-[2px] flex items-center justify-center gap-1.5 transition"
+        >
+          <i data-lucide="bookmark-plus" class="w-4 h-4 text-yellow-400"></i>
+          <span>Guardar Acorde</span>
+        </button>
+        <button
+          id="addToSheetBtn"
+          onclick="addOrUpdateSheetChord()"
+          class="py-2.5 px-3 bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-extrabold uppercase tracking-wider rounded-[2px] flex items-center justify-center gap-1.5 transition"
+        >
+          <i data-lucide="plus-square" class="w-4 h-4"></i>
+          <span id="addToSheetText">Agregar a Lámina</span>
+        </button>
+      </div>
+
+      <button
+        id="cancelEditChordBtn"
+        onclick="cancelSheetChordEdit()"
+        class="hidden w-full py-1.5 text-xs font-bold uppercase text-zinc-400 hover:text-white border border-zinc-800 rounded-[2px]"
+      >
+        Cancelar edición de acorde
+      </button>
+
+      <!-- Acceso Rápido a Acordes Guardados -->
+      <div class="border-t border-zinc-800 pt-3">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-zinc-400">Acordes Guardados (Clic para insertar)</span>
+          <button onclick="openChordsModal()" class="text-[11px] font-bold text-yellow-400 hover:underline">Ver todos</button>
+        </div>
+        <div id="quickChordsBar" class="flex gap-2 overflow-x-auto pb-1.5"></div>
+      </div>
+    </section>
+
+    <!-- COLUMNA DERECHA (7 cols): 2. RASGUEO Y 3. LÁMINA / CANCIÓN -->
+    <div class="lg:col-span-7 space-y-5">
+
+      <!-- 2. CONSTRUCTOR DE RASGUEO -->
+      <section class="bg-[#121215] border border-zinc-800 rounded-[3px] p-4 space-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-800 pb-2.5">
+          <h2 class="font-matcha text-lg text-white uppercase flex items-center gap-2">
+            <span class="text-yellow-400">2.</span> Patrón de Rasgueo
+          </h2>
+          <div class="flex items-center gap-2">
+            <input
+              id="strumLabelInput"
+              type="text"
+              value="Corridos Tumbados (6/8)"
+              placeholder="Compás o ritmo..."
+              class="bg-zinc-950 border border-zinc-700 focus:border-yellow-400 outline-none px-2.5 py-1 text-xs font-semibold text-zinc-200 rounded-[2px] w-44"
+            />
+            <button
+              onclick="clearStrum()"
+              class="text-xs font-semibold text-zinc-400 hover:text-red-400 px-2 py-1 border border-zinc-800 rounded-[2px]"
+            >
+              Limpiar
+            </button>
+          </div>
+        </div>
+
+        <!-- Botones de Golpes y Bajeos -->
+        <div class="flex flex-wrap gap-1.5">
+          <button onclick="addStrumToken('B1')" class="px-2.5 py-1.5 bg-emerald-950/70 hover:bg-emerald-900 border border-emerald-700/70 text-emerald-300 font-mono-code text-xs font-bold rounded-[2px]">
+            B1 (Bajo 1)
+          </button>
+          <button onclick="addStrumToken('B2')" class="px-2.5 py-1.5 bg-amber-950/70 hover:bg-amber-900 border border-amber-700/70 text-amber-300 font-mono-code text-xs font-bold rounded-[2px]">
+            B2 (Bajo 2)
+          </button>
+          <button onclick="addStrumToken('↓')" class="px-3 py-1.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-white font-mono-code text-sm font-bold rounded-[2px]">
+            ↓
+          </button>
+          <button onclick="addStrumToken('↑')" class="px-3 py-1.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-white font-mono-code text-sm font-bold rounded-[2px]">
+            ↑
+          </button>
+          <button onclick="addStrumToken('↓>')" class="px-2.5 py-1.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-yellow-400 font-mono-code text-xs font-bold rounded-[2px]">
+            ↓&gt; Acento
+          </button>
+          <button onclick="addStrumToken('✕')" class="px-2.5 py-1.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-red-400 font-mono-code text-xs font-bold rounded-[2px]">
+            ✕ Apagado
+          </button>
+          <button onclick="addStrumToken('—')" class="px-2.5 py-1.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-400 font-mono-code text-xs font-bold rounded-[2px]">
+            — Pausa
+          </button>
+          <button onclick="addStrumToken('|')" class="px-2.5 py-1.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-500 font-mono-code text-xs font-bold rounded-[2px]">
+            | Compás
+          </button>
+        </div>
+
+        <!-- Secuencia Actual -->
+        <div id="strumSequenceContainer" class="min-h-[48px] bg-black border border-zinc-800 p-2.5 rounded-[2px] flex flex-wrap items-center gap-1.5"></div>
+
+        <!-- Ritmos Base Listos -->
+        <div class="flex flex-wrap items-center gap-1.5 pt-1">
+          <span class="text-[11px] font-bold uppercase text-zinc-500 mr-1">Ritmos base:</span>
+          <button onclick="applyStrumPreset('tumbados')" class="preset-pill">Corridos Tumbados 6/8</button>
+          <button onclick="applyStrumPreset('sierreno')" class="preset-pill">Sierreño 3/4</button>
+          <button onclick="applyStrumPreset('ranchera')" class="preset-pill">Ranchera 3/4</button>
+          <button onclick="applyStrumPreset('bolero')" class="preset-pill">Bolero</button>
+          <button onclick="applyStrumPreset('pop')" class="preset-pill">Ritmo 4/4</button>
+          <button onclick="applyStrumPreset('reggae')" class="preset-pill">Apagado 4/4</button>
+        </div>
+      </section>
+
+      <!-- 3. LÁMINA Y EXPORTACIÓN PNG -->
+      <section class="bg-[#121215] border border-zinc-800 rounded-[3px] p-4 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-800 pb-2.5">
+          <h2 class="font-matcha text-lg text-white uppercase flex items-center gap-2">
+            <span class="text-yellow-400">3.</span> Lámina de Canción
+          </h2>
+
+          <div class="flex items-center gap-2">
+            <label class="text-[11px] font-bold uppercase text-zinc-400">Columnas:</label>
+            <select
+              id="columnsSelect"
+              onchange="renderSheetPreview()"
+              class="bg-zinc-950 border border-zinc-700 text-white text-xs font-bold px-2 py-1 rounded-[2px] outline-none"
+            >
+              <option value="2">2</option>
+              <option value="3" selected>3</option>
+              <option value="4">4</option>
+            </select>
+
+            <button
+              onclick="clearSheet()"
+              class="text-xs font-semibold text-zinc-400 hover:text-red-400 px-2 py-1 border border-zinc-800 rounded-[2px]"
+            >
+              Vaciar
+            </button>
+          </div>
+        </div>
+
+        <!-- Título de la Canción -->
+        <div class="grid grid-cols-1 sm:grid-cols-12 gap-2.5 items-end">
+          <div class="sm:col-span-8">
+            <label class="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1">Título de la Canción</label>
+            <input
+              id="songTitleInput"
+              type="text"
+              placeholder="Escribe el nombre de la canción..."
+              oninput="renderSheetPreview()"
+              class="w-full bg-zinc-950 border border-zinc-700 focus:border-yellow-400 outline-none px-3 py-2 font-matcha text-lg text-white rounded-[2px]"
+            />
+          </div>
+          <div class="sm:col-span-4 flex gap-2">
+            <button
+              onclick="saveCurrentSong()"
+              class="w-full py-2.5 px-3 bg-zinc-900 hover:bg-zinc-800 text-white border border-zinc-700 text-xs font-bold uppercase tracking-wider rounded-[2px] flex items-center justify-center gap-1.5"
+            >
+              <i data-lucide="save" class="w-4 h-4 text-yellow-400"></i>
+              <span id="saveSongBtnText">Guardar Canción</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Vista Previa de la Lámina (Centrada por fila) -->
+        <div class="bg-black border border-zinc-800 rounded-[2px] p-4 sm:p-6">
+          <div id="sheetPreviewHeader" class="text-center mb-4">
+            <h3 id="previewSongTitle" class="font-matcha text-2xl sm:text-3xl text-white uppercase tracking-wide"></h3>
+            <div id="previewStrumBox" class="mt-2 inline-flex flex-wrap items-center justify-center gap-1.5 px-3 py-1.5 bg-zinc-950 border border-zinc-800 rounded-[2px]"></div>
+          </div>
+
+          <div id="sheetGridContainer" class="space-y-4"></div>
+
+          <div class="mt-6 pt-3 border-t border-zinc-900 flex items-center justify-center gap-2 text-zinc-400">
+            <span class="text-xs font-bold uppercase tracking-widest">ESTUDIO MONGUI</span>
+            <span class="text-zinc-600">|</span>
+            <span class="text-sm font-extrabold text-yellow-400">@ronits.ss</span>
+          </div>
+        </div>
+
+        <!-- Botón de Descarga PNG -->
+        <button
+          onclick="downloadSheetPNG()"
+          class="w-full py-3 px-4 bg-yellow-400 hover:bg-yellow-300 text-black font-matcha text-base uppercase tracking-wider rounded-[2px] flex items-center justify-center gap-2 transition"
+        >
+          <i data-lucide="image-down" class="w-5 h-5"></i>
+          <span>Descargar Lámina en PNG (@ronits.ss)</span>
+        </button>
+      </section>
     </div>
-
-    <!-- CONTENEDOR DE NOTIFICACIONES TOAST -->
-    <div id="toast-container" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
-
-    <script>
-        /* =====================================================================
-           1. CONFIGURACIÓN, CLAVES DE ALMACENAMIENTO Y ACORDES BASE
-           ===================================================================== */
-        const STORAGE_KEYS = {
-            CHORDS: 'mongui_saved_chords_v3',
-            SONGS: 'mongui_saved_songs_v3',
-            DRAFT: 'mongui_active_draft_v3'
-        };
-
-        /**
-         * Colección inicial de acordes esenciales para evitar captura manual repetitiva.
-         * Cada objeto almacena instrumento, nombre, traste inicial, color, puntos, cejillas y cuerdas O/X.
-         */
-        const DEFAULT_CHORDS = [
-            { id: 'def_f',      instrument: 'guitar',  name: 'F',       startFret: 1, accentColor: '#FACC15', dots: [{ string: 2, fret: 3 }, { string: 3, fret: 2 }], barres: [{ fret: 1, fromString: 4, toString: 5 }], topMarkers: { 0: 'X', 1: 'X' }, fluteHoles: [0,0,0,0,0,0,0,0] },
-            { id: 'def_fm',     instrument: 'guitar',  name: 'Fm',      startFret: 1, accentColor: '#FACC15', dots: [{ string: 2, fret: 3 }], barres: [{ fret: 1, fromString: 3, toString: 5 }], topMarkers: { 0: 'X', 1: 'X' }, fluteHoles: [0,0,0,0,0,0,0,0] },
-            { id: 'def_fs',     instrument: 'guitar',  name: 'F#',      startFret: 2, accentColor: '#FACC15', dots: [{ string: 2, fret: 3 }, { string: 3, fret: 2 }], barres: [{ fret: 1, fromString: 4, toString: 5 }], topMarkers: { 0: 'X', 1: 'X' }, fluteHoles: [0,0,0,0,0,0,0,0] },
-            { id: 'def_fsm',    instrument: 'guitar',  name: 'F#m',     startFret: 2, accentColor: '#FACC15', dots: [{ string: 2, fret: 3 }], barres: [{ fret: 1, fromString: 3, toString: 5 }], topMarkers: { 0: 'X', 1: 'X' }, fluteHoles: [0,0,0,0,0,0,0,0] },
-            { id: 'def_fsm7',   instrument: 'guitar',  name: 'F#m7',    startFret: 7, accentColor: '#FACC15', dots: [{ string: 3, fret: 1 }, { string: 2, fret: 3 }, { string: 4, fret: 3 }], barres: [], topMarkers: { 0: 'X', 1: 'X', 5: 'X' }, fluteHoles: [0,0,0,0,0,0,0,0] },
-            { id: 'def_f7',     instrument: 'guitar',  name: 'F7',      startFret: 6, accentColor: '#FACC15', dots: [{ string: 4, fret: 1 }, { string: 3, fret: 2 }, { string: 2, fret: 3 }, { string: 4, fret: 3 }], barres: [], topMarkers: { 0: 'X', 1: 'X', 5: 'X' }, fluteHoles: [0,0,0,0,0,0,0,0] },
-            { id: 'def_fm7',    instrument: 'guitar',  name: 'Fm7',     startFret: 6, accentColor: '#FACC15', dots: [{ string: 3, fret: 1 }, { string: 2, fret: 3 }, { string: 4, fret: 3 }], barres: [], topMarkers: { 0: 'X', 1: 'X', 5: 'X' }, fluteHoles: [0,0,0,0,0,0,0,0] },
-            { id: 'def_fs7',    instrument: 'guitar',  name: 'F#7',     startFret: 7, accentColor: '#FACC15', dots: [{ string: 4, fret: 1 }, { string: 3, fret: 2 }, { string: 2, fret: 3 }, { string: 4, fret: 3 }], barres: [], topMarkers: { 0: 'X', 1: 'X', 5: 'X' }, fluteHoles: [0,0,0,0,0,0,0,0] },
-            { id: 'def_c',      instrument: 'guitar',  name: 'C',       startFret: 1, accentColor: '#FACC15', dots: [{ string: 4, fret: 1 }, { string: 2, fret: 2 }, { string: 1, fret: 3 }], barres: [], topMarkers: { 0: 'X', 3: 'O', 5: 'O' }, fluteHoles: [0,0,0,0,0,0,0,0] },
-            { id: 'def_g',      instrument: 'guitar',  name: 'G',       startFret: 1, accentColor: '#FACC15', dots: [{ string: 1, fret: 2 }, { string: 0, fret: 3 }, { string: 5, fret: 3 }], barres: [], topMarkers: { 2: 'O', 3: 'O', 4: 'O' }, fluteHoles: [0,0,0,0,0,0,0,0] },
-            { id: 'def_am',     instrument: 'guitar',  name: 'Am',      startFret: 1, accentColor: '#FACC15', dots: [{ string: 4, fret: 1 }, { string: 2, fret: 2 }, { string: 3, fret: 2 }], barres: [], topMarkers: { 0: 'X', 1: 'O', 5: 'O' }, fluteHoles: [0,0,0,0,0,0,0,0] },
-            { id: 'def_d',      instrument: 'guitar',  name: 'D',       startFret: 1, accentColor: '#FACC15', dots: [{ string: 3, fret: 2 }, { string: 5, fret: 2 }, { string: 4, fret: 3 }], barres: [], topMarkers: { 0: 'X', 1: 'X', 2: 'O' }, fluteHoles: [0,0,0,0,0,0,0,0] },
-            { id: 'def_em',     instrument: 'guitar',  name: 'Em',      startFret: 1, accentColor: '#FACC15', dots: [{ string: 1, fret: 2 }, { string: 2, fret: 2 }], barres: [], topMarkers: { 0: 'O', 3: 'O', 4: 'O', 5: 'O' }, fluteHoles: [0,0,0,0,0,0,0,0] },
-            { id: 'def_uke_c',  instrument: 'ukulele', name: 'C (UKE)', startFret: 1, accentColor: '#FACC15', dots: [{ string: 3, fret: 3 }], barres: [], topMarkers: { 0: 'O', 1: 'O', 2: 'O' }, fluteHoles: [0,0,0,0,0,0,0,0] },
-            { id: 'def_flt_do', instrument: 'flute',   name: 'DO',      startFret: 1, accentColor: '#FACC15', dots: [], barres: [], topMarkers: {}, fluteHoles: [1,1,1,1,1,1,1,1] }
-        ];
-
-        /* =====================================================================
-           2. ESTADO CENTRAL DE LA APLICACIÓN
-           ===================================================================== */
-        const state = {
-            // Estado del acorde activo en el editor
-            instrument: 'guitar',
-            name: 'F',
-            startFret: 1,
-            accentColor: '#FACC15',
-            toolMode: 'dot', // 'dot' | 'barre' | 'top'
-            dots: [{ string: 2, fret: 3 }, { string: 3, fret: 2 }],
-            barres: [{ fret: 1, fromString: 4, toString: 5 }],
-            topMarkers: { 0: 'X', 1: 'X' },
-            fluteHoles: [1, 1, 1, 1, 1, 1, 1, 1],
-            editingSheetIndex: null,
-
-            // Estado de la canción / lámina activa
-            activeSongId: null,
-            songTitle: 'MI CANCIÓN EN MONGUI',
-            strumMeter: 'Corridos Tumbados (6/8)',
-            // Patrón correcto: Bajo 1, Abajo, Arriba, Compás, Bajo 2, Abajo, Arriba
-            strumPattern: ['bass1', 'down', 'up', 'bar', 'bass2', 'down', 'up'],
-            sheetChords: [],
-
-            // Bibliotecas persistentes
-            savedChords: [],
-            savedSongs: [],
-            chordLibraryFilter: 'all'
-        };
-
-        // Referencias al Canvas principal
-        const editorCanvas = document.getElementById('editor-canvas');
-        const editorCtx = editorCanvas.getContext('2d');
-
-        // Variables de control táctil / puntero
-        let isDraggingBarre = false;
-        let activePointerId = null;
-        let dragStartCell = null;
-        let dragCurrentCell = null;
-        let hoverTargetCell = null;
-        let pendingBarreStart = null;
-
-        // Caché en memoria de DataURLs para evitar re-renderizado y parpadeo de miniaturas
-        const thumbCache = new Map();
-
-        /* =====================================================================
-           3. UTILIDADES DE INTERFAZ (VIBRACIÓN, NOTIFICACIONES Y LOGO PROPIO)
-           ===================================================================== */
-        function triggerHaptic(ms = 10) {
-            try {
-                if (navigator && typeof navigator.vibrate === 'function') navigator.vibrate(ms);
-            } catch (e) {}
-        }
-
-        function showToast(message) {
-            const container = document.getElementById('toast-container');
-            const el = document.createElement('div');
-            el.className = 'px-3.5 py-2 bg-[#121214] border border-yellow-400 rounded-[2px] font-mono-tech text-xs text-white shadow-xl transition-opacity duration-200';
-            el.textContent = message;
-            container.appendChild(el);
-            setTimeout(() => {
-                el.style.opacity = '0';
-                setTimeout(() => el.remove(), 200);
-            }, 2200);
-        }
-
-        /* =====================================================================
-           4. MOTOR DE RENDERIZADO EN CANVAS (EDITOR, MINIATURAS Y PNG FINAL)
-           ===================================================================== */
-        function roundRect(ctx, x, y, w, h, r) {
-            const radius = Math.min(r, w / 2, h / 2);
-            ctx.beginPath();
-            ctx.moveTo(x + radius, y);
-            ctx.arcTo(x + w, y, x + w, y + h, radius);
-            ctx.arcTo(x + w, y + h, x, y + h, radius);
-            ctx.arcTo(x, y + h, x, y, radius);
-            ctx.arcTo(x, y, x + w, y, radius);
-            ctx.closePath();
-        }
-
-        /**
-         * Dibuja un diagrama completo (Guitarra, Ukelele o Flauta) en cualquier contexto 2D.
-         */
-        function drawDiagramOnContext(ctx, width, height, chordData, options = {}) {
-            const { showWatermark = true, previewDrag = null, highlightCell = null } = options;
-            const accent = chordData.accentColor || '#FACC15';
-
-            // Fondo negro puro
-            ctx.fillStyle = '#000000';
-            ctx.fillRect(0, 0, width, height);
-
-            // Título del acorde con tipografía condensada en negrita
-            ctx.fillStyle = '#FFFFFF';
-            ctx.font = `900 ${Math.round(width * 0.145)}px "Barlow Condensed", sans-serif`;
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText((chordData.name || 'ACORDE').toUpperCase(), width / 2, height * 0.095);
-
-            if (chordData.instrument === 'flute') {
-                drawFluteDiagram(ctx, width, height, chordData, accent);
-            } else {
-                drawStringDiagram(ctx, width, height, chordData, accent, previewDrag, highlightCell);
-            }
-
-            // Marca de agua monocromática @ronits.ss
-            if (showWatermark) {
-                const wmY = height - height * 0.045;
-                ctx.fillStyle = '#A1A1AA';
-                ctx.font = `700 ${Math.max(10, Math.round(width * 0.036))}px "JetBrains Mono", monospace`;
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.fillText('@ronits.ss', width / 2, wmY);
-            }
-        }
-
-        function drawStringDiagram(ctx, width, height, chordData, accent, previewDrag, highlightCell) {
-            const numStrings = chordData.instrument === 'ukulele' ? 4 : 6;
-            const numFrets = 4;
-            const gridLeft = numStrings === 4 ? width * 0.28 : width * 0.24;
-            const gridRight = width * 0.86;
-            const gridTop = height * 0.225;
-            const gridBottom = height * 0.855;
-            const stringSpacing = (gridRight - gridLeft) / (numStrings - 1);
-            const fretSpacing = (gridBottom - gridTop) / numFrets;
-            const startFret = Math.max(1, parseInt(chordData.startFret, 10) || 1);
-
-            // Marcadores superiores O / X
-            ctx.font = `700 ${Math.round(width * 0.048)}px "JetBrains Mono", monospace`;
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            for (let s = 0; s < numStrings; s++) {
-                const marker = chordData.topMarkers ? chordData.topMarkers[s] : null;
-                const sx = gridLeft + s * stringSpacing;
-                const sy = gridTop - height * 0.042;
-                if (marker === 'O') {
-                    ctx.strokeStyle = '#FFFFFF';
-                    ctx.lineWidth = 2;
-                    ctx.beginPath();
-                    ctx.arc(sx, sy, width * 0.021, 0, Math.PI * 2);
-                    ctx.stroke();
-                } else if (marker === 'X') {
-                    ctx.fillStyle = '#A1A1AA';
-                    ctx.fillText('✕', sx, sy + 1);
-                }
-            }
-
-            // Números de traste a la izquierda
-            ctx.fillStyle = '#FFFFFF';
-            ctx.font = `800 ${Math.round(width * 0.08)}px "Barlow Condensed", sans-serif`;
-            ctx.textAlign = 'right';
-            ctx.textBaseline = 'middle';
-            for (let f = 0; f < numFrets; f++) {
-                const fy = gridTop + (f + 0.5) * fretSpacing;
-                ctx.fillText(String(startFret + f), gridLeft - width * 0.055, fy);
-            }
-
-            // Líneas horizontales de trastes
-            ctx.strokeStyle = '#FFFFFF';
-            for (let f = 0; f <= numFrets; f++) {
-                const fy = gridTop + f * fretSpacing;
-                ctx.lineWidth = (f === 0 && startFret === 1) ? 5 : 2;
-                ctx.beginPath();
-                ctx.moveTo(gridLeft - 1, fy);
-                ctx.lineTo(gridRight + 1, fy);
-                ctx.stroke();
-            }
-
-            // Líneas verticales de cuerdas
-            ctx.lineWidth = 2;
-            for (let s = 0; s < numStrings; s++) {
-                const sx = gridLeft + s * stringSpacing;
-                ctx.beginPath();
-                ctx.moveTo(sx, gridTop);
-                ctx.lineTo(sx, gridBottom);
-                ctx.stroke();
-            }
-
-            // Previsualización de cejilla al arrastrar
-            if (previewDrag && previewDrag.fret >= 1 && previewDrag.fret <= numFrets) {
-                const sMin = Math.min(previewDrag.fromString, previewDrag.toString);
-                const sMax = Math.max(previewDrag.fromString, previewDrag.toString);
-                const x1 = gridLeft + sMin * stringSpacing - width * 0.036;
-                const x2 = gridLeft + sMax * stringSpacing + width * 0.036;
-                const yCenter = gridTop + (previewDrag.fret - 0.5) * fretSpacing;
-                ctx.save();
-                ctx.globalAlpha = 0.6;
-                ctx.fillStyle = accent;
-                roundRect(ctx, x1, yCenter - height * 0.025, x2 - x1, height * 0.05, 2);
-                ctx.fill();
-                ctx.restore();
-            }
-
-            // Indicador guía de celda tocada
-            if (highlightCell && highlightCell.type === 'cell') {
-                const hx = gridLeft + highlightCell.string * stringSpacing;
-                const hy = gridTop + (highlightCell.fret - 0.5) * fretSpacing;
-                ctx.save();
-                ctx.strokeStyle = accent;
-                ctx.globalAlpha = 0.6;
-                ctx.lineWidth = 1.8;
-                ctx.beginPath();
-                ctx.arc(hx, hy, width * 0.048, 0, Math.PI * 2);
-                ctx.stroke();
-                ctx.restore();
-            }
-
-            // Cejillas (barras rectas)
-            (chordData.barres || []).forEach(b => {
-                if (b.fret < 1 || b.fret > numFrets) return;
-                const sMin = Math.max(0, Math.min(b.fromString, b.toString));
-                const sMax = Math.min(numStrings - 1, Math.max(b.fromString, b.toString));
-                const x1 = gridLeft + sMin * stringSpacing - width * 0.036;
-                const x2 = gridLeft + sMax * stringSpacing + width * 0.036;
-                const yCenter = gridTop + (b.fret - 0.5) * fretSpacing;
-                const barH = height * 0.052;
-                ctx.fillStyle = accent;
-                roundRect(ctx, x1, yCenter - barH / 2, x2 - x1, barH, 2);
-                ctx.fill();
-            });
-
-            // Puntos de dedos
-            const dotRadius = numStrings === 4 ? width * 0.043 : width * 0.038;
-            (chordData.dots || []).forEach(d => {
-                if (d.fret < 1 || d.fret > numFrets || d.string < 0 || d.string >= numStrings) return;
-                const dx = gridLeft + d.string * stringSpacing;
-                const dy = gridTop + (d.fret - 0.5) * fretSpacing;
-                ctx.fillStyle = accent;
-                ctx.beginPath();
-                ctx.arc(dx, dy, dotRadius, 0, Math.PI * 2);
-                ctx.fill();
-            });
-        }
-
-        function drawFluteDiagram(ctx, width, height, chordData, accent) {
-            const centerX = width / 2 + width * 0.035;
-            const topY = height * 0.19;
-            const bottomY = height * 0.87;
-            const bodyW = width * 0.145;
-
-            ctx.strokeStyle = '#FFFFFF';
-            ctx.lineWidth = 2.2;
-            roundRect(ctx, centerX - bodyW / 2, topY, bodyW, bottomY - topY, 3);
-            ctx.stroke();
-
-            ctx.beginPath();
-            ctx.moveTo(centerX - bodyW / 2, topY + height * 0.075);
-            ctx.lineTo(centerX + bodyW / 2, topY + height * 0.075);
-            ctx.stroke();
-
-            const holes = chordData.fluteHoles || [0,0,0,0,0,0,0,0];
-            const holeR = width * 0.031;
-
-            const thumbX = centerX - width * 0.14;
-            const thumbY = topY + height * 0.125;
-            ctx.fillStyle = '#A1A1AA';
-            ctx.font = `700 ${Math.round(width * 0.03)}px "JetBrains Mono", monospace`;
-            ctx.textAlign = 'center';
-            ctx.fillText('ATRÁS', thumbX, thumbY - holeR - 8);
-            drawSingleFluteHole(ctx, thumbX, thumbY, holeR, holes[0], accent);
-
-            const startHoleY = topY + height * 0.135;
-            const stepY = (bottomY - startHoleY - height * 0.05) / 6;
-            for (let i = 1; i < 8; i++) {
-                const hy = startHoleY + (i - 1) * stepY;
-                const offsetX = i === 7 ? width * 0.015 : 0;
-                drawSingleFluteHole(ctx, centerX + offsetX, hy, holeR, holes[i], accent);
-            }
-        }
-
-        function drawSingleFluteHole(ctx, x, y, r, stateVal, accent) {
-            ctx.save();
-            ctx.strokeStyle = '#FFFFFF';
-            ctx.lineWidth = 2;
-            if (stateVal === 1) {
-                ctx.fillStyle = accent;
-                ctx.beginPath();
-                ctx.arc(x, y, r, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.stroke();
-            } else if (stateVal === 2) {
-                ctx.fillStyle = accent;
-                ctx.beginPath();
-                ctx.arc(x, y, r, Math.PI * 0.5, Math.PI * 1.5);
-                ctx.fill();
-                ctx.beginPath();
-                ctx.arc(x, y, r, 0, Math.PI * 2);
-                ctx.stroke();
-            } else {
-                ctx.fillStyle = '#000000';
-                ctx.beginPath();
-                ctx.arc(x, y, r, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.stroke();
-            }
-            ctx.restore();
-        }
-
-        function renderEditorCanvas() {
-            const previewDrag = (isDraggingBarre && dragStartCell && dragCurrentCell && dragStartCell.string !== dragCurrentCell.string)
-                ? { fret: dragStartCell.fret, fromString: dragStartCell.string, toString: dragCurrentCell.string }
-                : null;
-            const highlightCell = previewDrag ? null : (pendingBarreStart || hoverTargetCell);
-
-            drawDiagramOnContext(editorCtx, editorCanvas.width, editorCanvas.height, state, {
-                showWatermark: true,
-                previewDrag,
-                highlightCell
-            });
-        }
-
-        /**
-         * Genera y cachea una imagen PNG estática por cada configuración única de acorde,
-         * eliminando cualquier parpadeo al abrir modales o reorganizar la hoja.
-         */
-        function getCachedChordDataURL(chord) {
-            const key = JSON.stringify({
-                i: chord.instrument,
-                n: chord.name,
-                f: chord.startFret,
-                c: chord.accentColor,
-                d: chord.dots,
-                b: chord.barres,
-                t: chord.topMarkers,
-                h: chord.fluteHoles
-            });
-            if (thumbCache.has(key)) return thumbCache.get(key);
-
-            const offCanvas = document.createElement('canvas');
-            offCanvas.width = 220;
-            offCanvas.height = 285;
-            const offCtx = offCanvas.getContext('2d');
-            drawDiagramOnContext(offCtx, 220, 285, chord, { showWatermark: true });
-            const url = offCanvas.toDataURL('image/png');
-            thumbCache.set(key, url);
-            return url;
-        }
-
-        /* =====================================================================
-           5. GESTIÓN TÁCTIL Y DE PUNTERO EN EL CANVAS (SIN SCROLL ACCIDENTAL)
-           ===================================================================== */
-        function getCanvasCoords(evt) {
-            const rect = editorCanvas.getBoundingClientRect();
-            const scaleX = editorCanvas.width / rect.width;
-            const scaleY = editorCanvas.height / rect.height;
-            return {
-                x: (evt.clientX - rect.left) * scaleX,
-                y: (evt.clientY - rect.top) * scaleY
-            };
-        }
-
-        function hitTestCell(x, y) {
-            const width = editorCanvas.width;
-            const height = editorCanvas.height;
-
-            if (state.instrument === 'flute') {
-                const centerX = width / 2 + width * 0.035;
-                const topY = height * 0.19;
-                const bottomY = height * 0.87;
-                const thumbX = centerX - width * 0.14;
-                const thumbY = topY + height * 0.125;
-                if (Math.hypot(x - thumbX, y - thumbY) <= 24) return { holeIdx: 0 };
-
-                const startHoleY = topY + height * 0.135;
-                const stepY = (bottomY - startHoleY - height * 0.05) / 6;
-                for (let i = 1; i < 8; i++) {
-                    const hy = startHoleY + (i - 1) * stepY;
-                    const offsetX = i === 7 ? width * 0.015 : 0;
-                    if (Math.hypot(x - (centerX + offsetX), y - hy) <= 24) return { holeIdx: i };
-                }
-                return null;
-            }
-
-            const numStrings = state.instrument === 'ukulele' ? 4 : 6;
-            const numFrets = 4;
-            const gridLeft = numStrings === 4 ? width * 0.28 : width * 0.24;
-            const gridRight = width * 0.86;
-            const gridTop = height * 0.225;
-            const gridBottom = height * 0.855;
-            const stringSpacing = (gridRight - gridLeft) / (numStrings - 1);
-            const fretSpacing = (gridBottom - gridTop) / numFrets;
-
-            if (y >= gridTop - 44 && y <= gridTop - 4) {
-                const rawString = Math.round((x - gridLeft) / stringSpacing);
-                if (rawString >= 0 && rawString < numStrings && Math.abs(x - (gridLeft + rawString * stringSpacing)) <= stringSpacing * 0.55) {
-                    return { type: 'topMarker', string: rawString };
-                }
-            }
-
-            if (x >= gridLeft - 30 && x <= gridRight + 30 && y >= gridTop - 4 && y <= gridBottom + 18) {
-                const rawString = Math.round((x - gridLeft) / stringSpacing);
-                const stringIdx = Math.max(0, Math.min(numStrings - 1, rawString));
-                const rawFret = Math.floor((y - gridTop) / fretSpacing) + 1;
-                const fretIdx = Math.max(1, Math.min(numFrets, rawFret));
-                return { type: 'cell', string: stringIdx, fret: fretIdx };
-            }
-            return null;
-        }
-
-        function cycleStringTopMarker(stringIdx) {
-            const curr = state.topMarkers[stringIdx];
-            if (!curr) state.topMarkers[stringIdx] = 'O';
-            else if (curr === 'O') state.topMarkers[stringIdx] = 'X';
-            else delete state.topMarkers[stringIdx];
-            triggerHaptic(10);
-            renderEditorCanvas();
-        }
-
-        editorCanvas.addEventListener('pointerdown', (evt) => {
-            if (evt.button !== undefined && evt.button !== 0 && evt.pointerType === 'mouse') return;
-            evt.preventDefault();
-
-            const { x, y } = getCanvasCoords(evt);
-            const hit = hitTestCell(x, y);
-            hoverTargetCell = hit;
-            if (!hit) {
-                renderEditorCanvas();
-                return;
-            }
-
-            if (state.instrument === 'flute' && typeof hit.holeIdx === 'number') {
-                state.fluteHoles[hit.holeIdx] = (state.fluteHoles[hit.holeIdx] + 1) % 3;
-                triggerHaptic(12);
-                renderEditorCanvas();
-                return;
-            }
-
-            if (hit.type === 'topMarker' || (hit.type === 'cell' && state.toolMode === 'top')) {
-                cycleStringTopMarker(hit.string);
-                return;
-            }
-
-            if (hit.type === 'cell') {
-                activePointerId = evt.pointerId;
-                try { editorCanvas.setPointerCapture(evt.pointerId); } catch (e) {}
-                isDraggingBarre = true;
-                dragStartCell = { string: hit.string, fret: hit.fret };
-                dragCurrentCell = { string: hit.string, fret: hit.fret };
-                renderEditorCanvas();
-            }
-        });
-
-        editorCanvas.addEventListener('pointermove', (evt) => {
-            const { x, y } = getCanvasCoords(evt);
-            const hit = hitTestCell(x, y);
-
-            if (!isDraggingBarre || !dragStartCell) {
-                if (evt.pointerType === 'mouse') {
-                    const prev = hoverTargetCell;
-                    hoverTargetCell = hit;
-                    if (JSON.stringify(prev) !== JSON.stringify(hit)) renderEditorCanvas();
-                }
-                return;
-            }
-
-            if (activePointerId !== null && evt.pointerId !== activePointerId) return;
-            evt.preventDefault();
-
-            if (hit && (hit.type === 'cell' || hit.type === 'topMarker')) {
-                if (!dragCurrentCell || dragCurrentCell.string !== hit.string) triggerHaptic(8);
-                dragCurrentCell = { string: hit.string, fret: dragStartCell.fret };
-                hoverTargetCell = dragCurrentCell;
-                renderEditorCanvas();
-            }
-        });
-
-        editorCanvas.addEventListener('pointerup', (evt) => {
-            if (activePointerId !== null && evt.pointerId !== activePointerId) return;
-            if (activePointerId !== null) {
-                try { editorCanvas.releasePointerCapture(activePointerId); } catch (e) {}
-                activePointerId = null;
-            }
-
-            if (!isDraggingBarre || !dragStartCell) return;
-            const start = dragStartCell;
-            const end = dragCurrentCell || start;
-            isDraggingBarre = false;
-            dragStartCell = null;
-            dragCurrentCell = null;
-            hoverTargetCell = null;
-
-            if (start.string !== end.string) {
-                toggleBarre(start.fret, start.string, end.string);
-                pendingBarreStart = null;
-                triggerHaptic(16);
-                renderEditorCanvas();
-                return;
-            }
-
-            if (state.toolMode === 'barre') {
-                if (!pendingBarreStart) {
-                    const existingIdx = state.barres.findIndex(b =>
-                        b.fret === start.fret &&
-                        start.string >= Math.min(b.fromString, b.toString) &&
-                        start.string <= Math.max(b.fromString, b.toString)
-                    );
-                    if (existingIdx >= 0) {
-                        state.barres.splice(existingIdx, 1);
-                        triggerHaptic(12);
-                        renderEditorCanvas();
-                        return;
-                    }
-                    pendingBarreStart = start;
-                    triggerHaptic(12);
-                    renderEditorCanvas();
-                    showToast(`Cejilla iniciada en traste ${start.fret}. Toca la cuerda final.`);
-                } else {
-                    toggleBarre(pendingBarreStart.fret, pendingBarreStart.string, start.string);
-                    pendingBarreStart = null;
-                    triggerHaptic(16);
-                    renderEditorCanvas();
-                }
-                return;
-            }
-
-            const barreIdx = state.barres.findIndex(b =>
-                b.fret === start.fret &&
-                start.string >= Math.min(b.fromString, b.toString) &&
-                start.string <= Math.max(b.fromString, b.toString)
-            );
-            if (barreIdx >= 0) {
-                state.barres.splice(barreIdx, 1);
-                triggerHaptic(12);
-                renderEditorCanvas();
-                return;
-            }
-
-            const dotIdx = state.dots.findIndex(d => d.string === start.string && d.fret === start.fret);
-            if (dotIdx >= 0) {
-                state.dots.splice(dotIdx, 1);
-            } else {
-                state.dots.push({ string: start.string, fret: start.fret });
-                delete state.topMarkers[start.string];
-            }
-            triggerHaptic(12);
-            renderEditorCanvas();
-        });
-
-        editorCanvas.addEventListener('pointercancel', () => {
-            isDraggingBarre = false;
-            activePointerId = null;
-            dragStartCell = null;
-            dragCurrentCell = null;
-            hoverTargetCell = null;
-            renderEditorCanvas();
-        });
-
-        function toggleBarre(fret, s1, s2) {
-            const fromString = Math.min(s1, s2);
-            const toString = Math.max(s1, s2);
-            state.barres = state.barres.filter(b => b.fret !== fret);
-            state.barres.push({ fret, fromString, toString });
-            for (let s = fromString; s <= toString; s++) delete state.topMarkers[s];
-        }
-
-        /* =====================================================================
-           6. CONTROLES DEL EDITOR Y BIBLIOTECA DE ACORDES (LOCALSTORAGE)
-           ===================================================================== */
-        function setInstrument(inst) {
-            state.instrument = inst;
-            pendingBarreStart = null;
-            ['guitar', 'ukulele', 'flute'].forEach(key => {
-                const btn = document.getElementById(`inst-${key}`);
-                btn.className = key === inst
-                    ? 'sharp-btn px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-yellow-400 text-black'
-                    : 'sharp-btn px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-zinc-400 hover:text-white';
-            });
-
-            const isFlute = inst === 'flute';
-            document.getElementById('string-tools-bar').style.display = isFlute ? 'none' : 'flex';
-            document.getElementById('fret-control-box').style.opacity = isFlute ? '0.35' : '1';
-            document.getElementById('editor-hint-text').textContent = isFlute
-                ? 'Toca un orificio: Abierto → Tapado → Medio tapado'
-                : 'Toca una cuerda o desliza horizontalmente para cejilla';
-
-            renderEditorCanvas();
-        }
-
-        function setToolMode(mode) {
-            state.toolMode = mode;
-            pendingBarreStart = null;
-            const activeCls = 'sharp-btn px-2.5 py-1.5 bg-yellow-400 text-black text-xs font-bold flex items-center gap-1.5';
-            const inactiveCls = 'sharp-btn px-2.5 py-1.5 bg-[#121214] text-zinc-300 border border-[#26262a] hover:border-zinc-500 text-xs font-semibold flex items-center gap-1.5';
-            document.getElementById('tool-dot').className = mode === 'dot' ? activeCls : inactiveCls;
-            document.getElementById('tool-barre').className = mode === 'barre' ? activeCls : inactiveCls;
-            document.getElementById('tool-top').className = mode === 'top' ? activeCls : inactiveCls;
-            renderEditorCanvas();
-        }
-
-        function setAccentColor(hex) {
-            state.accentColor = hex;
-            renderEditorCanvas();
-        }
-
-        function onChordConfigChange() {
-            state.name = document.getElementById('chord-name-input').value || 'ACORDE';
-            state.startFret = Math.max(1, parseInt(document.getElementById('start-fret-input').value, 10) || 1);
-            renderEditorCanvas();
-        }
-
-        function clearCurrentDiagram() {
-            state.dots = [];
-            state.barres = [];
-            state.topMarkers = {};
-            state.fluteHoles = [0, 0, 0, 0, 0, 0, 0, 0];
-            pendingBarreStart = null;
-            renderEditorCanvas();
-        }
-
-        function cloneChordSnapshot() {
-            return {
-                id: 'ch_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
-                instrument: state.instrument,
-                name: (document.getElementById('chord-name-input').value || 'ACORDE').trim().toUpperCase(),
-                startFret: Math.max(1, parseInt(document.getElementById('start-fret-input').value, 10) || 1),
-                accentColor: state.accentColor,
-                dots: JSON.parse(JSON.stringify(state.dots)),
-                barres: JSON.parse(JSON.stringify(state.barres)),
-                topMarkers: JSON.parse(JSON.stringify(state.topMarkers)),
-                fluteHoles: [...state.fluteHoles]
-            };
-        }
-
-        function loadChordIntoEditor(chord, sheetIdx = null) {
-            state.instrument = chord.instrument || 'guitar';
-            state.name = chord.name || 'ACORDE';
-            state.startFret = chord.startFret || 1;
-            state.accentColor = chord.accentColor || '#FACC15';
-            state.dots = JSON.parse(JSON.stringify(chord.dots || []));
-            state.barres = JSON.parse(JSON.stringify(chord.barres || []));
-            state.topMarkers = JSON.parse(JSON.stringify(chord.topMarkers || {}));
-            state.fluteHoles = [...(chord.fluteHoles || [0,0,0,0,0,0,0,0])];
-            state.editingSheetIndex = sheetIdx;
-
-            document.getElementById('chord-name-input').value = state.name;
-            document.getElementById('start-fret-input').value = state.startFret;
-            document.getElementById('add-chord-btn-label').textContent = sheetIdx !== null ? 'Actualizar' : 'A la Hoja';
-            setInstrument(state.instrument);
-        }
-
-        function saveCurrentChordToLibrary(notify = false) {
-            const snap = cloneChordSnapshot();
-            const existingIdx = state.savedChords.findIndex(c =>
-                c.name.toLowerCase() === snap.name.toLowerCase() && c.instrument === snap.instrument
-            );
-            if (existingIdx >= 0) {
-                snap.id = state.savedChords[existingIdx].id;
-                state.savedChords[existingIdx] = snap;
-            } else {
-                state.savedChords.unshift(snap);
-            }
-            persistChords();
-            renderQuickChordsStrip();
-            if (notify) showToast(`Acorde "${snap.name}" guardado`);
-        }
-
-        function addCurrentChordToSheet() {
-            const snap = cloneChordSnapshot();
-            saveCurrentChordToLibrary(false);
-
-            if (state.editingSheetIndex !== null && state.sheetChords[state.editingSheetIndex]) {
-                state.sheetChords[state.editingSheetIndex] = snap;
-                state.editingSheetIndex = null;
-                document.getElementById('add-chord-btn-label').textContent = 'A la Hoja';
-                showToast(`Acorde "${snap.name}" actualizado`);
-            } else {
-                state.sheetChords.push(snap);
-                showToast(`"${snap.name}" añadido a la lámina`);
-            }
-            saveActiveDraft();
-            renderSheetGrid();
-        }
-
-        function renderQuickChordsStrip() {
-            const strip = document.getElementById('quick-chords-strip');
-            document.getElementById('saved-chords-badge').textContent = state.savedChords.length;
-
-            const recent = state.savedChords.slice(0, 6);
-            strip.innerHTML = recent.map(ch => {
-                const imgUrl = getCachedChordDataURL(ch);
-                return `
-                    <button type="button" onclick="insertSavedChordToSheet('${ch.id}')" title="Insertar ${ch.name}"
-                        class="sharp-btn group relative bg-black border border-[#26262a] hover:border-yellow-400 p-1 overflow-hidden">
-                        <img src="${imgUrl}" alt="${ch.name}" class="chord-thumb-img">
-                        <span class="absolute inset-x-0 bottom-0 bg-yellow-400 text-black font-mono-tech text-[9px] font-bold py-0.5 opacity-0 group-hover:opacity-100">
-                            + HOJA
-                        </span>
-                    </button>
-                `;
-            }).join('');
-        }
-
-        function insertSavedChordToSheet(chordId) {
-            const found = state.savedChords.find(c => c.id === chordId);
-            if (!found) return;
-            const copy = JSON.parse(JSON.stringify(found));
-            copy.id = 'ch_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
-            state.sheetChords.push(copy);
-            saveActiveDraft();
-            renderSheetGrid();
-            showToast(`"${found.name}" insertado`);
-        }
-
-        function openChordsModal() {
-            const modal = document.getElementById('chords-modal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            renderChordsLibraryGrid();
-        }
-
-        function closeChordsModal() {
-            const modal = document.getElementById('chords-modal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        }
-
-        function setChordLibraryFilter(filter) {
-            state.chordLibraryFilter = filter;
-            document.querySelectorAll('.chord-filter-btn').forEach(btn => {
-                const isActive = btn.dataset.chordFilter === filter;
-                btn.className = isActive
-                    ? 'chord-filter-btn sharp-btn px-3 py-1.5 bg-yellow-400 text-black text-xs font-bold uppercase'
-                    : 'chord-filter-btn sharp-btn px-3 py-1.5 bg-[#121214] text-zinc-300 border border-[#26262a] text-xs font-semibold uppercase';
-            });
-            renderChordsLibraryGrid();
-        }
-
-        function renderChordsLibraryGrid() {
-            const grid = document.getElementById('chords-library-grid');
-            const query = (document.getElementById('chord-search-input').value || '').trim().toLowerCase();
-
-            const filtered = state.savedChords.filter(ch => {
-                const matchInst = state.chordLibraryFilter === 'all' || ch.instrument === state.chordLibraryFilter;
-                const matchName = !query || ch.name.toLowerCase().includes(query);
-                return matchInst && matchName;
-            });
-
-            if (!filtered.length) {
-                grid.innerHTML = `<div class="col-span-full text-center py-10 font-mono-tech text-xs text-zinc-500">Sin acordes registrados con este filtro.</div>`;
-                return;
-            }
-
-            grid.innerHTML = filtered.map(ch => {
-                const imgUrl = getCachedChordDataURL(ch);
-                const instLabel = ch.instrument === 'ukulele' ? 'UKE' : (ch.instrument === 'flute' ? 'FLAUTA' : 'GUIT');
-                return `
-                    <div class="bg-[#0a0a0a] border border-[#26262a] rounded-[2px] p-2 flex flex-col gap-2">
-                        <div class="relative bg-black">
-                            <img src="${imgUrl}" alt="${ch.name}" class="chord-thumb-img">
-                            <span class="absolute top-1 right-1 px-1.5 py-0.5 bg-[#121214] border border-[#26262a] font-mono-tech text-[9px] text-zinc-400">
-                                ${instLabel}
-                            </span>
-                        </div>
-                        <div class="grid grid-cols-3 gap-1">
-                            <button type="button" onclick="insertSavedChordToSheet('${ch.id}'); closeChordsModal();"
-                                class="col-span-2 sharp-btn py-1.5 px-2 bg-yellow-400 hover:bg-yellow-300 text-black font-bold text-[11px] uppercase">
-                                + Hoja
-                            </button>
-                            <div class="flex gap-1">
-                                <button type="button" onclick="editSavedChord('${ch.id}')" title="Editar"
-                                    class="flex-1 sharp-btn py-1.5 bg-[#18181b] hover:bg-[#26262a] text-[11px] font-mono-tech text-zinc-200">
-                                    ED
-                                </button>
-                                <button type="button" onclick="deleteSavedChord('${ch.id}')" title="Eliminar"
-                                    class="flex-1 sharp-btn py-1.5 bg-[#18181b] hover:bg-zinc-700 text-[11px] font-mono-tech text-zinc-400">
-                                    ✕
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function editSavedChord(chordId) {
-            const found = state.savedChords.find(c => c.id === chordId);
-            if (!found) return;
-            loadChordIntoEditor(found, null);
-            closeChordsModal();
-            showToast(`Editando "${found.name}"`);
-        }
-
-        function deleteSavedChord(chordId) {
-            state.savedChords = state.savedChords.filter(c => c.id !== chordId);
-            persistChords();
-            renderQuickChordsStrip();
-            renderChordsLibraryGrid();
-            showToast('Acorde eliminado');
-        }
-
-        /* =====================================================================
-           7. CONSTRUCTOR DE PATRONES DE RASGUEO (ESTRUCTURA MUSICAL EXACTA)
-           ===================================================================== */
-        const STRUM_META = {
-            bass1:       { symbol: 'B1', label: 'BAJO 1',   badgeClass: 'bg-[#121214] border-zinc-600 text-white' },
-            bass2:       { symbol: 'B2', label: 'BAJO 2',   badgeClass: 'bg-[#121214] border-zinc-600 text-zinc-300' },
-            down:        { symbol: '↓',  label: 'ABAJO',    badgeClass: 'bg-[#121214] border-yellow-400/60 text-yellow-400' },
-            up:          { symbol: '↑',  label: 'ARRIBA',   badgeClass: 'bg-[#121214] border-[#26262a] text-white' },
-            down_accent: { symbol: '↓>', label: 'ACENTO ↓', badgeClass: 'bg-[#18181b] border-yellow-400 text-yellow-400' },
-            up_accent:   { symbol: '↑>', label: 'ACENTO ↑', badgeClass: 'bg-[#18181b] border-white text-white' },
-            mute:        { symbol: '✕',  label: 'APAGADO',  badgeClass: 'bg-[#18181b] border-zinc-500 text-zinc-200' },
-            pause:       { symbol: '—',  label: 'PAUSA',    badgeClass: 'bg-[#0a0a0a] border-[#26262a] text-zinc-500' },
-            bar:         { symbol: '|',  label: 'COMPÁS',   badgeClass: 'bg-transparent border-transparent text-zinc-500 px-1' }
-        };
-
-        function addStrumStep(step) {
-            if (state.strumPattern.length >= 24) {
-                showToast('Máximo 24 pasos por patrón');
-                return;
-            }
-            state.strumPattern.push(step);
-            triggerHaptic(8);
-            saveActiveDraft();
-            renderStrumSequence();
-        }
-
-        function removeStrumStepAt(index) {
-            state.strumPattern.splice(index, 1);
-            saveActiveDraft();
-            renderStrumSequence();
-        }
-
-        function popStrumStep() {
-            state.strumPattern.pop();
-            saveActiveDraft();
-            renderStrumSequence();
-        }
-
-        function clearStrumPattern() {
-            state.strumPattern = [];
-            saveActiveDraft();
-            renderStrumSequence();
-        }
-
-        function onStrumMeterChange() {
-            state.strumMeter = document.getElementById('strum-meter-input').value;
-            saveActiveDraft();
-            renderStrumSequence();
-        }
-
-        /**
-         * Patrones base musicales fieles para géneros regionales y contemporáneos.
-         */
-        function applyStrumPreset(presetName) {
-            const presets = {
-                tumbado:  { label: 'Corridos Tumbados (6/8)', steps: ['bass1', 'down', 'up', 'bar', 'bass2', 'down', 'up'] },
-                sierreno: { label: 'Sierreño / Campirano (3/4)', steps: ['bass1', 'down', 'down', 'bar', 'bass2', 'down', 'down'] },
-                ranchera: { label: 'Ranchera / Vals (3/4)', steps: ['bass1', 'down_accent', 'down', 'bar', 'bass2', 'down_accent', 'down'] },
-                bolero:   { label: 'Bolero / Norteño (4/4)', steps: ['bass1', 'down', 'up', 'bar', 'bass2', 'down', 'up'] },
-                pop44:    { label: 'Ritmo Contemporáneo (4/4)', steps: ['down', 'down', 'up', 'pause', 'up', 'down', 'up'] },
-                balada:   { label: 'Balada (4/4)', steps: ['down', 'down', 'up', 'down', 'up'] },
-                reggae:   { label: 'Ritmo Apagado (4/4)', steps: ['mute', 'down_accent', 'mute', 'down_accent'] }
-            };
-            const selected = presets[presetName];
-            if (!selected) return;
-            state.strumMeter = selected.label;
-            state.strumPattern = [...selected.steps];
-            document.getElementById('strum-meter-input').value = state.strumMeter;
-            saveActiveDraft();
-            renderStrumSequence();
-            showToast(`Patrón aplicado: ${selected.label}`);
-        }
-
-        function renderStrumSequence() {
-            const container = document.getElementById('strum-sequence-container');
-            const previewBadge = document.getElementById('preview-strum-badge');
-
-            if (!state.strumPattern.length) {
-                container.innerHTML = `<span class="font-mono-tech text-xs text-zinc-500">Selecciona golpes arriba para construir el patrón...</span>`;
-                previewBadge.textContent = state.strumMeter ? state.strumMeter.toUpperCase() : '';
-                return;
-            }
-
-            container.innerHTML = state.strumPattern.map((step, idx) => {
-                const meta = STRUM_META[step] || STRUM_META.down;
-                if (step === 'bar') {
-                    return `<button type="button" onclick="removeStrumStepAt(${idx})" title="Quitar separador" class="text-zinc-500 hover:text-white font-mono-tech font-bold text-base px-0.5">|</button>`;
-                }
-                return `
-                    <button type="button" onclick="removeStrumStepAt(${idx})" title="Clic para quitar"
-                        class="sharp-btn px-2 py-1 border ${meta.badgeClass} flex flex-col items-center min-w-[42px]">
-                        <span class="font-mono-tech text-xs font-bold leading-none">${meta.symbol}</span>
-                        <span class="font-mono-tech text-[8px] uppercase mt-0.5 text-zinc-400">${meta.label}</span>
-                    </button>
-                `;
-            }).join('');
-
-            const readableStrum = state.strumPattern
-                .map(s => (STRUM_META[s] ? STRUM_META[s].symbol : ''))
-                .join(' ');
-            previewBadge.textContent = `${state.strumMeter ? state.strumMeter.toUpperCase() + '  •  ' : ''}${readableStrum}`;
-        }
-
-        /* =====================================================================
-           8. GESTIÓN DE LA LÁMINA DE CANCIÓN Y VISTA PREVIA CENTRADA
-           ===================================================================== */
-        function onSongTitleChange() {
-            state.songTitle = (document.getElementById('song-title-input').value || 'MI CANCIÓN EN MONGUI').toUpperCase();
-            document.getElementById('preview-song-title').textContent = state.songTitle;
-            saveActiveDraft();
-        }
-
-        function renderSheetGrid() {
-            const container = document.getElementById('sheet-chords-container');
-            const cols = Math.max(2, Math.min(4, parseInt(document.getElementById('columns-select').value, 10) || 3));
-
-            if (!state.sheetChords.length) {
-                container.innerHTML = `
-                    <div class="py-10 px-4 border border-dashed border-[#26262a] text-center space-y-1">
-                        <p class="font-condensed text-lg font-bold uppercase text-zinc-300">Lámina vacía</p>
-                        <p class="font-mono-tech text-xs text-zinc-500">Añade acordes desde el editor izquierdo o desde Mis Acordes</p>
-                    </div>
-                `;
-                return;
-            }
-
-            // Divide los acordes en filas según las columnas elegidas para centrar cada fila
-            const rows = [];
-            for (let i = 0; i < state.sheetChords.length; i += cols) {
-                rows.push(state.sheetChords.slice(i, i + cols));
-            }
-
-            container.innerHTML = rows.map((rowChords, rIdx) => {
-                const cardsHtml = rowChords.map((ch, cIdx) => {
-                    const realIdx = rIdx * cols + cIdx;
-                    const imgUrl = getCachedChordDataURL(ch);
-                    return `
-                        <div class="w-[132px] sm:w-[152px] bg-black border border-[#26262a] hover:border-zinc-500 rounded-[2px] p-1.5">
-                            <img src="${imgUrl}" alt="${ch.name}" class="chord-thumb-img">
-                            <div class="mt-1.5 flex items-center justify-between gap-1">
-                                <button type="button" onclick="moveSheetChord(${realIdx}, -1)" ${realIdx === 0 ? 'disabled' : ''}
-                                    class="sharp-btn px-1.5 py-1 bg-[#121214] hover:bg-[#26262a] disabled:opacity-25 font-mono-tech text-[10px] text-zinc-300">
-                                    ◀
-                                </button>
-                                <button type="button" onclick="editSheetChord(${realIdx})"
-                                    class="sharp-btn flex-1 py-1 bg-[#121214] hover:bg-yellow-400 hover:text-black font-mono-tech text-[10px] font-bold text-zinc-200">
-                                    EDITAR
-                                </button>
-                                <button type="button" onclick="removeSheetChord(${realIdx})"
-                                    class="sharp-btn px-1.5 py-1 bg-[#121214] hover:bg-zinc-700 font-mono-tech text-[10px] text-zinc-400">
-                                    ✕
-                                </button>
-                                <button type="button" onclick="moveSheetChord(${realIdx}, 1)" ${realIdx === state.sheetChords.length - 1 ? 'disabled' : ''}
-                                    class="sharp-btn px-1.5 py-1 bg-[#121214] hover:bg-[#26262a] disabled:opacity-25 font-mono-tech text-[10px] text-zinc-300">
-                                    ▶
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-
-                return `<div class="flex flex-wrap justify-center gap-3">${cardsHtml}</div>`;
-            }).join('');
-        }
-
-        function editSheetChord(idx) {
-            const ch = state.sheetChords[idx];
-            if (!ch) return;
-            loadChordIntoEditor(ch, idx);
-            showToast(`Editando posición #${idx + 1} (${ch.name})`);
-        }
-
-        function removeSheetChord(idx) {
-            state.sheetChords.splice(idx, 1);
-            if (state.editingSheetIndex === idx) {
-                state.editingSheetIndex = null;
-                document.getElementById('add-chord-btn-label').textContent = 'A la Hoja';
-            }
-            saveActiveDraft();
-            renderSheetGrid();
-        }
-
-        function moveSheetChord(idx, dir) {
-            const target = idx + dir;
-            if (target < 0 || target >= state.sheetChords.length) return;
-            const temp = state.sheetChords[idx];
-            state.sheetChords[idx] = state.sheetChords[target];
-            state.sheetChords[target] = temp;
-            saveActiveDraft();
-            renderSheetGrid();
-        }
-
-        function newBlankSong() {
-            state.activeSongId = null;
-            state.songTitle = 'NUEVA CANCIÓN';
-            state.sheetChords = [];
-            state.editingSheetIndex = null;
-            document.getElementById('song-title-input').value = state.songTitle;
-            document.getElementById('preview-song-title').textContent = state.songTitle;
-            document.getElementById('save-song-btn-label').textContent = 'Guardar Canción';
-            document.getElementById('add-chord-btn-label').textContent = 'A la Hoja';
-            saveActiveDraft();
-            renderSheetGrid();
-            showToast('Lámina reiniciada');
-        }
-
-        /* =====================================================================
-           9. EXPORTACIÓN PNG DE ALTA RESOLUCIÓN (CENTRADA Y CON MARCA DE AGUA)
-           ===================================================================== */
-        function downloadSingleChordPNG() {
-            const snap = cloneChordSnapshot();
-            const canvas = document.createElement('canvas');
-            canvas.width = 480;
-            canvas.height = 620;
-            const ctx = canvas.getContext('2d');
-            drawDiagramOnContext(ctx, canvas.width, canvas.height, snap, { showWatermark: true });
-
-            const safeName = (snap.name || 'ACORDE').replace(/[^a-zA-Z0-9#_-]/g, '_');
-            triggerDownloadCanvas(canvas, `MonGui_${safeName}_ronits.ss.png`);
-            showToast(`PNG descargado: ${snap.name}`);
-        }
-
-        function downloadFullSheetPNG() {
-            if (!state.sheetChords.length) {
-                showToast('Agrega al menos un acorde a la lámina');
-                return;
-            }
-
-            const cols = Math.max(2, Math.min(4, parseInt(document.getElementById('columns-select').value, 10) || 3));
-            const cardW = 300;
-            const cardH = 390;
-            const gapX = 28;
-            const gapY = 28;
-            const padX = 56;
-            const headerH = state.strumPattern.length > 0 ? 220 : 130;
-            const footerH = 80;
-
-            const rows = [];
-            for (let i = 0; i < state.sheetChords.length; i += cols) {
-                rows.push(state.sheetChords.slice(i, i + cols));
-            }
-
-            const maxColsUsed = Math.min(cols, state.sheetChords.length);
-            const canvasW = Math.max(760, padX * 2 + maxColsUsed * cardW + (maxColsUsed - 1) * gapX);
-            const canvasH = headerH + rows.length * cardH + Math.max(0, rows.length - 1) * gapY + footerH;
-
-            const outCanvas = document.createElement('canvas');
-            outCanvas.width = canvasW;
-            outCanvas.height = canvasH;
-            const ctx = outCanvas.getContext('2d');
-
-            // Fondo negro puro
-            ctx.fillStyle = '#000000';
-            ctx.fillRect(0, 0, canvasW, canvasH);
-
-            // Título de la canción con tipografía condensada en negrita
-            const titleText = (state.songTitle || 'MI CANCIÓN').trim().toUpperCase();
-            ctx.fillStyle = '#FFFFFF';
-            ctx.font = '900 54px "Barlow Condensed", sans-serif';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText(titleText, canvasW / 2, 54);
-
-            // Línea divisoria técnica en amarillo #facc15
-            ctx.fillStyle = '#FACC15';
-            ctx.fillRect(canvasW / 2 - 70, 88, 140, 3);
-
-            // Dibujar patrón de rasgueo si está definido
-            if (state.strumPattern.length > 0) {
-                drawStrumBannerOnCanvas(ctx, canvasW, 108, state.strumMeter, state.strumPattern, state.accentColor);
-            }
-
-            // Dibujar cada fila centrada dinámicamente
-            rows.forEach((rowChords, rIdx) => {
-                const rowWidth = rowChords.length * cardW + (rowChords.length - 1) * gapX;
-                const startX = (canvasW - rowWidth) / 2;
-                const y = headerH + rIdx * (cardH + gapY);
-
-                rowChords.forEach((ch, cIdx) => {
-                    const x = startX + cIdx * (cardW + gapX);
-                    const subCanvas = document.createElement('canvas');
-                    subCanvas.width = cardW;
-                    subCanvas.height = cardH;
-                    const subCtx = subCanvas.getContext('2d');
-                    drawDiagramOnContext(subCtx, cardW, cardH, ch, { showWatermark: true });
-                    ctx.drawImage(subCanvas, x, y);
-                });
-            });
-
-            // Pie con marca de agua @ronits.ss
-            const footerY = canvasH - 38;
-            ctx.fillStyle = '#A1A1AA';
-            ctx.font = '700 18px "JetBrains Mono", monospace';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText('ESTUDIO MONGUI  |  @ronits.ss', canvasW / 2, footerY);
-
-            const safeSong = titleText.replace(/[^a-zA-Z0-9_-]/g, '_');
-            triggerDownloadCanvas(outCanvas, `MonGui_${safeSong}_ronits.ss.png`);
-            showToast('Lámina PNG descargada');
-        }
-
-        function drawStrumBannerOnCanvas(sCtx, canvasW, topY, meterLabel, pattern, accentColor) {
-            if (meterLabel) {
-                sCtx.fillStyle = '#A1A1AA';
-                sCtx.font = '700 14px "JetBrains Mono", monospace';
-                sCtx.textAlign = 'center';
-                sCtx.fillText(meterLabel.toUpperCase(), canvasW / 2, topY + 8);
-            }
-
-            const boxTop = topY + (meterLabel ? 22 : 4);
-            const stepW = 54;
-            const stepH = 58;
-            const gap = 8;
-
-            const totalW = pattern.reduce((acc, st) => acc + (st === 'bar' ? 16 : stepW) + gap, -gap);
-            let cursorX = (canvasW - totalW) / 2;
-
-            pattern.forEach(step => {
-                if (step === 'bar') {
-                    sCtx.strokeStyle = '#52525B';
-                    sCtx.lineWidth = 2.5;
-                    sCtx.beginPath();
-                    sCtx.moveTo(cursorX + 8, boxTop + 8);
-                    sCtx.lineTo(cursorX + 8, boxTop + stepH - 8);
-                    sCtx.stroke();
-                    cursorX += 16 + gap;
-                    return;
-                }
-
-                sCtx.fillStyle = '#121214';
-                sCtx.strokeStyle = (step === 'down' || step === 'down_accent') ? accentColor : '#3F3F46';
-                sCtx.lineWidth = 1.8;
-                roundRect(sCtx, cursorX, boxTop, stepW, stepH, 2);
-                sCtx.fill();
-                sCtx.stroke();
-
-                const cx = cursorX + stepW / 2;
-                const cy = boxTop + 22;
-
-                sCtx.textAlign = 'center';
-                sCtx.textBaseline = 'middle';
-
-                if (step === 'bass1' || step === 'bass2') {
-                    sCtx.fillStyle = '#FFFFFF';
-                    sCtx.font = '700 19px "JetBrains Mono", monospace';
-                    sCtx.fillText(step === 'bass1' ? 'B1' : 'B2', cx, cy + 1);
-                } else if (step === 'down' || step === 'down_accent') {
-                    drawArrowGraphic(sCtx, cx, cy, 'down', accentColor, step === 'down_accent');
-                } else if (step === 'up' || step === 'up_accent') {
-                    drawArrowGraphic(sCtx, cx, cy, 'up', '#FFFFFF', step === 'up_accent');
-                } else if (step === 'mute') {
-                    sCtx.strokeStyle = '#E4E4E7';
-                    sCtx.lineWidth = 3;
-                    sCtx.beginPath();
-                    sCtx.moveTo(cx - 7, cy - 7);
-                    sCtx.lineTo(cx + 7, cy + 7);
-                    sCtx.moveTo(cx + 7, cy - 7);
-                    sCtx.lineTo(cx - 7, cy + 7);
-                    sCtx.stroke();
-                } else if (step === 'pause') {
-                    sCtx.strokeStyle = '#71717A';
-                    sCtx.lineWidth = 2.5;
-                    sCtx.beginPath();
-                    sCtx.moveTo(cx - 8, cy);
-                    sCtx.lineTo(cx + 8, cy);
-                    sCtx.stroke();
-                }
-
-                const labelMap = {
-                    bass1: 'BAJO 1', bass2: 'BAJO 2', down: 'ABAJO', up: 'ARRIBA',
-                    down_accent: 'ACENTO', up_accent: 'ACENTO', mute: 'APAGADO', pause: 'PAUSA'
-                };
-                sCtx.fillStyle = '#A1A1AA';
-                sCtx.font = '700 8.5px "JetBrains Mono", monospace';
-                sCtx.fillText(labelMap[step] || '', cx, boxTop + stepH - 10);
-
-                cursorX += stepW + gap;
-            });
-        }
-
-        function drawArrowGraphic(ctx, cx, cy, dir, color, isAccent) {
-            ctx.save();
-            ctx.strokeStyle = color;
-            ctx.lineWidth = isAccent ? 3.6 : 2.6;
-            ctx.lineCap = 'square';
-
-            ctx.beginPath();
-            ctx.moveTo(cx, cy - 10);
-            ctx.lineTo(cx, cy + 10);
-            ctx.stroke();
-
-            ctx.beginPath();
-            if (dir === 'down') {
-                ctx.moveTo(cx - 5, cy + 4);
-                ctx.lineTo(cx, cy + 10);
-                ctx.lineTo(cx + 5, cy + 4);
-            } else {
-                ctx.moveTo(cx - 5, cy - 4);
-                ctx.lineTo(cx, cy - 10);
-                ctx.lineTo(cx + 5, cy - 4);
-            }
-            ctx.stroke();
-            ctx.restore();
-        }
-
-        function triggerDownloadCanvas(canvas, filename) {
-            const link = document.createElement('a');
-            link.download = filename;
-            link.href = canvas.toDataURL('image/png');
-            document.body.appendChild(link);
-            link.click();
-            link.remove();
-        }
-
-        /* =====================================================================
-           10. GESTOR DE CANCIONES Y RESPALDO JSON
-           ===================================================================== */
-        function saveCurrentSongToLibrary() {
-            const title = (document.getElementById('song-title-input').value || 'CANCIÓN SIN TÍTULO').trim().toUpperCase();
-            if (!state.sheetChords.length) {
-                showToast('Agrega al menos un acorde antes de guardar');
-                return;
-            }
-
-            const songRecord = {
-                id: state.activeSongId || ('song_' + Date.now()),
-                title,
-                strumMeter: state.strumMeter,
-                strumPattern: [...state.strumPattern],
-                chords: JSON.parse(JSON.stringify(state.sheetChords)),
-                updatedAt: new Date().toLocaleDateString('es-MX', { day: '2-digit', month: '2-digit', year: 'numeric' })
-            };
-
-            const existingIdx = state.savedSongs.findIndex(s => s.id === songRecord.id);
-            if (existingIdx >= 0) {
-                state.savedSongs[existingIdx] = songRecord;
-            } else {
-                state.savedSongs.unshift(songRecord);
-            }
-            state.activeSongId = songRecord.id;
-            document.getElementById('save-song-btn-label').textContent = 'Actualizar Canción';
-            persistSongs();
-            showToast(`Canción guardada: ${title}`);
-        }
-
-        function openSongsModal() {
-            const modal = document.getElementById('songs-modal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            renderSongsLibraryList();
-        }
-
-        function closeSongsModal() {
-            const modal = document.getElementById('songs-modal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        }
-
-        function renderSongsLibraryList() {
-            const list = document.getElementById('songs-library-list');
-            const q = (document.getElementById('song-search-input').value || '').trim().toLowerCase();
-            const filtered = state.savedSongs.filter(s => !q || s.title.toLowerCase().includes(q));
-
-            if (!filtered.length) {
-                list.innerHTML = `<div class="text-center py-10 font-mono-tech text-xs text-zinc-500">No hay canciones guardadas.</div>`;
-                return;
-            }
-
-            list.innerHTML = filtered.map(song => `
-                <div class="bg-[#0a0a0a] border border-[#26262a] rounded-[2px] p-3 flex flex-wrap items-center justify-between gap-3">
-                    <div class="min-w-0">
-                        <h4 class="font-condensed text-lg font-extrabold uppercase text-white truncate">${song.title}</h4>
-                        <p class="font-mono-tech text-[11px] text-zinc-400">
-                            ${song.chords.length} acordes • ${song.strumMeter || 'Sin ritmo'} • ${song.updatedAt || ''}
-                        </p>
-                        <div class="flex flex-wrap gap-1 mt-1.5">
-                            ${song.chords.map(c => `<span class="px-1.5 py-0.5 bg-[#121214] border border-[#26262a] font-mono-tech text-[10px] text-zinc-300">${c.name}</span>`).join('')}
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-1.5 shrink-0">
-                        <button type="button" onclick="loadSongFromLibrary('${song.id}')"
-                            class="sharp-btn px-3 py-1.5 bg-yellow-400 hover:bg-yellow-300 text-xs font-bold uppercase text-black">
-                            Cargar
-                        </button>
-                        <button type="button" onclick="deleteSongFromLibrary('${song.id}')"
-                            class="sharp-btn px-2.5 py-1.5 bg-[#18181b] hover:bg-zinc-700 font-mono-tech text-xs text-zinc-300">
-                            ✕
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function loadSongFromLibrary(songId) {
-            const found = state.savedSongs.find(s => s.id === songId);
-            if (!found) return;
-            state.activeSongId = found.id;
-            state.songTitle = found.title;
-            state.strumMeter = found.strumMeter || '';
-            state.strumPattern = [...(found.strumPattern || [])];
-            state.sheetChords = JSON.parse(JSON.stringify(found.chords || []));
-            state.editingSheetIndex = null;
-
-            document.getElementById('song-title-input').value = state.songTitle;
-            document.getElementById('preview-song-title').textContent = state.songTitle;
-            document.getElementById('strum-meter-input').value = state.strumMeter;
-            document.getElementById('save-song-btn-label').textContent = 'Actualizar Canción';
-
-            saveActiveDraft();
-            renderStrumSequence();
-            renderSheetGrid();
-            closeSongsModal();
-            showToast(`Cargada: ${found.title}`);
-        }
-
-        function deleteSongFromLibrary(songId) {
-            state.savedSongs = state.savedSongs.filter(s => s.id !== songId);
-            if (state.activeSongId === songId) {
-                state.activeSongId = null;
-                document.getElementById('save-song-btn-label').textContent = 'Guardar Canción';
-            }
-            persistSongs();
-            renderSongsLibraryList();
-            showToast('Canción eliminada');
-        }
-
-        function exportFullBackupJSON() {
-            const payload = {
-                app: 'MonGui',
-                author: '@ronits.ss',
-                exportedAt: new Date().toISOString(),
-                chords: state.savedChords,
-                songs: state.savedSongs
-            };
-            const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `MonGui_Respaldo_ronits.ss.json`;
-            a.click();
-            URL.revokeObjectURL(url);
-            showToast('Respaldo JSON exportado');
-        }
-
-        function importBackupJSON(evt) {
-            const file = evt.target.files && evt.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                try {
-                    const data = JSON.parse(e.target.result);
-                    if (Array.isArray(data.chords)) {
-                        state.savedChords = data.chords;
-                        persistChords();
-                    }
-                    if (Array.isArray(data.songs)) {
-                        state.savedSongs = data.songs;
-                        persistSongs();
-                    }
-                    renderQuickChordsStrip();
-                    renderSongsLibraryList();
-                    showToast('Respaldo importado');
-                } catch (err) {
-                    showToast('Archivo JSON inválido');
-                }
-            };
-            reader.readAsText(file);
-            evt.target.value = '';
-        }
-
-        function persistChords() {
-            try {
-                localStorage.setItem(STORAGE_KEYS.CHORDS, JSON.stringify(state.savedChords));
-                document.getElementById('saved-chords-badge').textContent = state.savedChords.length;
-            } catch (e) {}
-        }
-
-        function persistSongs() {
-            try {
-                localStorage.setItem(STORAGE_KEYS.SONGS, JSON.stringify(state.savedSongs));
-                document.getElementById('saved-songs-badge').textContent = state.savedSongs.length;
-            } catch (e) {}
-        }
-
-        function saveActiveDraft() {
-            try {
-                localStorage.setItem(STORAGE_KEYS.DRAFT, JSON.stringify({
-                    songTitle: state.songTitle,
-                    strumMeter: state.strumMeter,
-                    strumPattern: state.strumPattern,
-                    sheetChords: state.sheetChords
-                }));
-            } catch (e) {}
-        }
-
-        /* =====================================================================
-           11. INICIALIZACIÓN AL CARGAR LA VENTANA
-           ===================================================================== */
-        function initApp() {
-            // Inicializar iconos monocromáticos Lucide
-            if (window.lucide && typeof window.lucide.createIcons === 'function') {
-                window.lucide.createIcons();
-            }
-
-            try {
-                const rawChords = localStorage.getItem(STORAGE_KEYS.CHORDS);
-                state.savedChords = rawChords ? JSON.parse(rawChords) : JSON.parse(JSON.stringify(DEFAULT_CHORDS));
-                if (!rawChords) persistChords();
-
-                const rawSongs = localStorage.getItem(STORAGE_KEYS.SONGS);
-                state.savedSongs = rawSongs ? JSON.parse(rawSongs) : [];
-                document.getElementById('saved-songs-badge').textContent = state.savedSongs.length;
-
-                const rawDraft = localStorage.getItem(STORAGE_KEYS.DRAFT);
-                if (rawDraft) {
-                    const draft = JSON.parse(rawDraft);
-                    state.songTitle = draft.songTitle || state.songTitle;
-                    state.strumMeter = draft.strumMeter || state.strumMeter;
-                    state.strumPattern = Array.isArray(draft.strumPattern) ? draft.strumPattern : state.strumPattern;
-                    state.sheetChords = Array.isArray(draft.sheetChords) ? draft.sheetChords : [];
-                } else {
-                    state.sheetChords = JSON.parse(JSON.stringify(DEFAULT_CHORDS.slice(0, 3)));
-                }
-            } catch (e) {
-                state.savedChords = JSON.parse(JSON.stringify(DEFAULT_CHORDS));
-            }
-
-            document.getElementById('song-title-input').value = state.songTitle;
-            document.getElementById('preview-song-title').textContent = state.songTitle;
-            document.getElementById('strum-meter-input').value = state.strumMeter;
-            document.getElementById('saved-chords-badge').textContent = state.savedChords.length;
-
-            renderEditorCanvas();
-            renderQuickChordsStrip();
-            renderStrumSequence();
-            renderSheetGrid();
-        }
-
-        window.onload = initApp;
-    </script>
+  </main>
+
+  <!-- PIE DE PÁGINA CON CRÉDITOS DESTACADOS -->
+  <footer class="border-t border-zinc-800 bg-[#0d0d10] py-4 px-4 mt-8">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-center sm:text-left">
+      <div class="flex items-center gap-2">
+        <span class="font-matcha text-base text-white uppercase">MONGUI</span>
+        <span class="text-xs text-zinc-500">— Generador de Acordes y Rasgueos</span>
+      </div>
+      <a
+        href="https://instagram.com/ronits.ss"
+        target="_blank"
+        rel="noopener"
+        class="inline-flex items-center gap-2 text-sm sm:text-base font-extrabold text-yellow-400 hover:text-yellow-300"
+      >
+        <i data-lucide="instagram" class="w-4 h-4"></i>
+        <span>Creado por @ronits.ss</span>
+      </a>
+    </div>
+  </footer>
+
+  <!-- MODAL: MIS ACORDES GUARDADOS -->
+  <div id="chordsModal" class="hidden fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-4">
+    <div class="bg-[#121215] border border-zinc-700 rounded-[3px] w-full max-w-4xl max-h-[88vh] flex flex-col">
+      <div class="p-4 border-b border-zinc-800 flex items-center justify-between">
+        <h3 class="font-matcha text-xl text-white uppercase">Mis Acordes Guardados</h3>
+        <button onclick="closeChordsModal()" class="p-1.5 text-zinc-400 hover:text-white border border-zinc-800 rounded-[2px]">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div class="p-4 border-b border-zinc-800 flex flex-wrap gap-2 items-center justify-between">
+        <input
+          id="chordSearchInput"
+          type="text"
+          placeholder="Buscar acorde (ej. F#m7, Am, Do)..."
+          oninput="renderChordsModalGrid()"
+          class="bg-zinc-950 border border-zinc-700 focus:border-yellow-400 outline-none px-3 py-1.5 text-xs text-white rounded-[2px] w-full sm:w-64"
+        />
+        <div class="flex gap-1.5 text-xs font-bold">
+          <button onclick="setChordFilter('all')" id="filter-all" class="filter-chip px-2.5 py-1 border rounded-[2px]">Todos</button>
+          <button onclick="setChordFilter('guitar')" id="filter-guitar" class="filter-chip px-2.5 py-1 border rounded-[2px]">Guitarra</button>
+          <button onclick="setChordFilter('ukulele')" id="filter-ukulele" class="filter-chip px-2.5 py-1 border rounded-[2px]">Ukelele</button>
+          <button onclick="setChordFilter('flute')" id="filter-flute" class="filter-chip px-2.5 py-1 border rounded-[2px]">Flauta</button>
+        </div>
+      </div>
+
+      <div id="chordsModalGrid" class="p-4 overflow-y-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3"></div>
+    </div>
+  </div>
+
+  <!-- MODAL: MIS CANCIONES GUARDADAS -->
+  <div id="songsModal" class="hidden fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-4">
+    <div class="bg-[#121215] border border-zinc-700 rounded-[3px] w-full max-w-3xl max-h-[85vh] flex flex-col">
+      <div class="p-4 border-b border-zinc-800 flex items-center justify-between">
+        <h3 class="font-matcha text-xl text-white uppercase">Mis Canciones Guardadas</h3>
+        <button onclick="closeSongsModal()" class="p-1.5 text-zinc-400 hover:text-white border border-zinc-800 rounded-[2px]">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div class="p-4 border-b border-zinc-800">
+        <input
+          id="songSearchInput"
+          type="text"
+          placeholder="Buscar canción guardada..."
+          oninput="renderSongsModalList()"
+          class="bg-zinc-950 border border-zinc-700 focus:border-yellow-400 outline-none px-3 py-1.5 text-xs text-white rounded-[2px] w-full"
+        />
+      </div>
+
+      <div id="songsModalList" class="p-4 overflow-y-auto space-y-2.5"></div>
+    </div>
+  </div>
+
+  <!-- NOTIFICACIÓN TOAST -->
+  <div id="toast" class="fixed bottom-5 right-5 z-50 hidden bg-yellow-400 text-black font-bold text-xs uppercase tracking-wider px-4 py-2.5 rounded-[2px] shadow-lg"></div>
+
+  <!-- Lógica de la aplicación -->
+  <script src="app.js"></script>
 </body>
 </html>
